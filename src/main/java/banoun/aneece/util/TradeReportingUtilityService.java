@@ -1,125 +1,57 @@
 package banoun.aneece.util;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import banoun.aneece.model.TradeEntry;
+
 @Service
 public class TradeReportingUtilityService {
 	
 	@Autowired
 	DataLoadingUtilityService dataLoadingUtilityService;
 	
-	private boolean[] toggleFlags = new boolean[9];
-	private String[] tableHeaders = {"Entity", "In/Out", "Amount", "Settlement Date", "Instruction Date", "Currency",
+	private boolean[] toggleFlags = new boolean[10];
+	private String[] tableHeaders = {"ID", "Trader Name", "In/Out", "Amount", "Settlement Date", "Instruction Date", "Currency",
 			"Agreed Fx", "Units", "Unit Price" };
-	
-	public void toggleHeaderFlage(String header){
-		toggleFlags[Arrays.asList(tableHeaders).indexOf(header)] = !toggleFlags[Arrays.asList(tableHeaders).indexOf(header)];
-	}
 	
 	public String runTradeReporting(String sortingOption){
 		StringBuffer result = new StringBuffer();
-		result.append(printSortedReport(getSortingComparator(sortingOption)));
+		result.append(printSortedReport(sortingOption));
 		return result.toString();
 	}
 	
-	public String runTradeFilteredReporting(String filter){
+	public String runTradeFilteredReporting(String key, String type){
 		StringBuffer result = new StringBuffer();
-		result.append(printFilteredReport(filter));
+		result.append(printFilteredReport(key, type));
 		return result.toString();
+	}
+	
+	public void toggleHeaderFlage(String header){
+		toggleFlags[Arrays.asList(tableHeaders).indexOf(header.trim())] = !toggleFlags[Arrays.asList(tableHeaders).indexOf(header.trim())];
 	}
 	
 	private Boolean getToggleHeaderFlage(String header){
 		return toggleFlags[Arrays.asList(tableHeaders).indexOf(header)];
 	}
 	
-	private Comparator<TradeEntry> getSortingComparator(String sortingOption) {
-		Comparator<TradeEntry> sortingComparator = null;
-		Boolean toggleHeaderFlage = getToggleHeaderFlage(sortingOption);
-		switch (sortingOption) {
-		case "Entity":
-			sortingComparator = (trader1, trader2) -> 
-				toggleHeaderFlage ? trader2.getTraderName().compareTo(trader1.getTraderName()) : trader1.getTraderName().compareTo(trader2.getTraderName());
-			toggleHeaderFlage(sortingOption);
-			break;
-		case "In/Out":
-			sortingComparator = (trader1, trader2) -> 
-				toggleHeaderFlage ? trader2.getBuySellFlag().compareTo(trader1.getBuySellFlag()) : trader1.getBuySellFlag().compareTo(trader2.getBuySellFlag());
-			toggleHeaderFlage(sortingOption);
-			break;
-		case "Amount":
-			sortingComparator = (trader1, trader2) -> 
-				toggleHeaderFlage ? trader2.getAmountOfTrade().compareTo(trader1.getAmountOfTrade()) : trader1.getAmountOfTrade().compareTo(trader2.getAmountOfTrade());
-			toggleHeaderFlage(sortingOption);
-			break;
-		case "Settlement Date":
-			sortingComparator = (trader1, trader2) -> compareDates(trader1, trader2, toggleHeaderFlage);				
-			toggleHeaderFlage(sortingOption);
-			break;
-		case "Instruction Date":
-			sortingComparator = (trader1, trader2) -> compareDates(trader1, trader2, toggleHeaderFlage);
-			toggleHeaderFlage(sortingOption);
-			break;
-		case "Currency":
-			sortingComparator = (trader1, trader2) -> 
-				toggleHeaderFlage ? trader2.getCurrency().compareTo(trader1.getCurrency()) : trader1.getCurrency().compareTo(trader2.getCurrency());
-			toggleHeaderFlage(sortingOption);
-			break;
-		case "Agreed Fx":
-			sortingComparator = (trader1, trader2) -> 
-				toggleHeaderFlage ? trader2.getAgreedFx().compareTo(trader1.getAgreedFx()) : trader1.getAgreedFx().compareTo(trader2.getAgreedFx());
-			toggleHeaderFlage(sortingOption);
-			break;
-		case "Units":
-			sortingComparator = (trader1, trader2) -> 
-				toggleHeaderFlage ? trader2.getUnits().compareTo(trader1.getUnits()) : trader1.getUnits().compareTo(trader2.getUnits());
-			toggleHeaderFlage(sortingOption);
-			break;
-		case "Unit Price":
-			sortingComparator = (trader1, trader2) -> 
-				toggleHeaderFlage ? trader2.getUnitPrice().compareTo(trader1.getUnitPrice()) : trader1.getUnitPrice().compareTo(trader2.getUnitPrice());
-			toggleHeaderFlage(sortingOption);
-			break;
-		}
-		return sortingComparator;
-	}
-		
-	private Integer compareDates(TradeEntry trader1, TradeEntry trader2, Boolean toggleHeaderFlage){
-		if(toggleHeaderFlage){
-			TradeEntry temp = trader1;
-			trader1 = trader2;
-			trader2 = temp;
-		}
-		String pattern = "dd MMM yyyy";
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
-		LocalDate trader1Date = LocalDate.parse(trader1.getSettlementDate(), formatter);
-		LocalDate trader2Date = LocalDate.parse(trader2.getSettlementDate(), formatter);
-		return trader2Date.compareTo(trader1Date);
-	}
-	
-	private String printSortedReport(Comparator<TradeEntry> sortOrder) {
+	private String printSortedReport(String header) {
 		StringBuffer result = new StringBuffer();
-		List<TradeEntry> traderEntries = dataLoadingUtilityService.getAllTraderEntriesFromDB();
-		Collections.sort(traderEntries, sortOrder);
+		List<TradeEntry> traderEntries = dataLoadingUtilityService.getAllTraderEntriesOrderedByCriteria(header, this.getToggleHeaderFlage(header));
+		this.toggleHeaderFlage(header);
 		result.append(printReport(traderEntries, "All Buy/Sell Traders (Outgoing/Incoming)"));
 		return result.toString();
 	}
 	
-	private String printFilteredReport(String filter) {
+	private String printFilteredReport(String key, String type) {
 		StringBuffer result = new StringBuffer();
-		
-		result.append(printReport(dataLoadingUtilityService.getAllTraderEntriesFromDB().stream().filter(trader -> trader.getTraderName().equals(filter))
-				.collect(Collectors.toList()), "Look up result for: ***"+filter+"***"));
+		result.append(printReport(dataLoadingUtilityService.getAllTraderEntriesOrderedByCriteria("*", true)
+				.stream()
+				.filter(trader -> type.equals("tid")? trader.getId().equals(key):trader.getTrader().getName().equals(key))
+				.collect(Collectors.toList()), "Look up result for: ***"+key+"***"));
+
 		return result.toString();
 	}
 
@@ -143,14 +75,14 @@ public class TradeReportingUtilityService {
 		result.append(String.format(lineSeperator));
 
 		for (TradeEntry tradeEnty : tradeEnties) {
-			String fName = getToAddress(tradeEnty.getTraderName());
-			result.append(String.format(tableRowsAlignFormat, 
-					fName/*tradeEnty.getTraderName()*/,
+			
+			String fName = getToAddress(tradeEnty.getTrader().getName(), "tname");
+			result.append(String.format(tableRowsAlignFormat, getToAddress(tradeEnty.getId(), "tid"), fName,
 					tradeEnty.getBuySellFlag() == 'B' ? "Outgoing" : "Incoming",
-					String.format("%.2f", tradeEnty.getAmountOfTrade()),
-					tradeEnty.getSettlementDate().equals(tradeEnty.getInstructionDate()) ? tradeEnty.getSettlementDate()
-							: tradeEnty.getSettlementDate() + "*",
-					tradeEnty.getInstructionDate(), tradeEnty.getCurrency(),
+					String.format("%.2f", tradeEnty.getAmount()),
+					tradeEnty.getSettlementDate().equals(tradeEnty.getInstructionDate()) ? dataLoadingUtilityService.getFormattedLocalDate(tradeEnty.getSettlementDate())
+							: dataLoadingUtilityService.getFormattedLocalDate(tradeEnty.getSettlementDate()) + "*",
+							dataLoadingUtilityService.getFormattedLocalDate(tradeEnty.getInstructionDate()), tradeEnty.getCurrency(),
 					String.format("%.2f", tradeEnty.getAgreedFx()), tradeEnty.getUnits(),
 					String.format("%.2f", tradeEnty.getUnitPrice())));
 		}
@@ -164,8 +96,8 @@ public class TradeReportingUtilityService {
 			cWidths[n] = cHeaders[n].length();
 		}
 		for (TradeEntry trader : tradeEnties) {
-			int[] tWidths = { trader.getTraderName().length(), 9,
-					String.format("%.2f", trader.getAmountOfTrade()).length(), 14, 16, 8, 9, 6, 10 };
+			int[] tWidths = { trader.getId().length(),trader.getTrader().getName().length(), 9,
+					String.format("%.2f", trader.getAmount()).length(), 14, 16, 8, 9, 6, 10 };
 			for (int i = 0; i < tWidths.length; i++) {
 				if (tWidths[i] > cWidths[i]) {
 					cWidths[i] = tWidths[i];
@@ -181,9 +113,10 @@ public class TradeReportingUtilityService {
 			cWidths[n] = cHeaders[n].length();
 		}
 		for (TradeEntry trader : tradeEnties) {
-			String fName = getToAddress(trader.getTraderName());
-			int[] tWidths = { fName.length(), 9,
-					String.format("%.2f", trader.getAmountOfTrade()).length(), 14, 16, 8, 9, 6, 10 };
+			String fName = getToAddress(trader.getTrader().getName(), "tname");
+			String id = getToAddress(trader.getId(), "tid");
+			int[] tWidths = {id.length(),  fName.length(), 9,
+					String.format("%.2f", trader.getAmount()).length(), 14, 16, 8, 9, 6, 10 };
 			for (int i = 0; i < tWidths.length; i++) {
 				if (tWidths[i] > cWidths[i]) {
 					cWidths[i] = tWidths[i];
@@ -213,8 +146,9 @@ public class TradeReportingUtilityService {
 		return seperator + "%n";
 	}
 	
-	private String getToAddress(String text){
-		return "<label style='color:red'>"+text+"</label>";
+	private String getToAddress(String text, String name){
+		String colour = name.equals("tid")?"red":"yellow";
+		return String.format("<label name='%s' style='color:%s'>%s</label>", name, colour, text);
 	}
 	
 	private static String addHtmlTagToTableHeaders(String[] tableHeaders, String table){
@@ -225,7 +159,7 @@ public class TradeReportingUtilityService {
 	}
 	
 	private static String addHtmlTag(String text, String tagNameAndAttribute){
-		return "<"+tagNameAndAttribute+">"+text+"</"+tagNameAndAttribute.split(" ")[0]+">";
+		return String.format("<%s>%s</%s>", tagNameAndAttribute, text, tagNameAndAttribute.split(" ")[0]);
 	}
 
 }

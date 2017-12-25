@@ -1,34 +1,43 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Stock Reporting</title>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<title>Stock Reporting</title>
+<script src="/webjars/jquery/3.1.1/jquery.min.js"></script>
 
 </head>
 <body style="background-color: black; color: green">
 
 	<center>
-		<h3><pre style="white-space: pre-wrap;" th:utext="${stockReporting}">${stockReporting}</pre></h3>
+		<h3>
+			<pre style="white-space: pre-wrap;" th:utext="${stockReporting}">${stockReporting}</pre>
+		</h3>
 	</center>
 
 
 	<form id="stockReporting" action="/stockReporting" method="POST">
-	    <input type="hidden" id="sortingOption" name="sortingOption" value="Amount"/>
+		<input type="hidden" id="sortingOption" name="sortingOption"
+			value="Amount" />
 	</form>
-
-<script >
-$( document ).ready(function() {
-	$("label").click(function(event) {
-		  if($(this).attr("name") == "header"){
-			  $('#sortingOption').attr("value", $(this).text());
-			  $('#stockReporting').submit();
-		  }else{
-			  window.location = "/stockFilteredReporting/"+$(this).text();
-		  }
+	<form id="stockFilteredReporting" action="/stockFilteredReporting"
+		method="POST">
+		<input type="hidden" id="searchKey" name="searchKey" value="ANY" /> <input
+			type="hidden" id="searchType" name="searchType" value="tid" />
+	</form>
+	<script>
+		$(document).ready(function() {
+			$("label").click(function(event) {
+				if ($(this).attr("name") == "header") {
+					$('#sortingOption').attr("value", $(this).text());
+					$('#stockReporting').submit();
+				} else {
+					searchKey = $(this).text();
+					searchType = $(this).attr("name");
+					$('#searchKey').attr("value", searchKey);
+					$('#searchType').attr("value", searchType);
+					$('#stockFilteredReporting').submit();
+				}
+			});
 		});
-});
-</script>
-
-
+	</script>
 </body>
 </html>

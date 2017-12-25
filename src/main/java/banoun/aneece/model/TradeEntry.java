@@ -2,52 +2,49 @@ package banoun.aneece.model;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.EnumSet;
-
-import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document
-public class TradeEntry {
+@Document(collection = "tradeEntry")
+public class TradeEntry{
 
     @Id
-    private ObjectId _id;
-	private String traderName;
+    private String _id;
+	@DBRef
+	private Trader trader;
 	private String currency;
 	private Double unitPrice;
 	private Integer units;
 	private Double agreedFx;
+	private Double amount;
 	private Character buySellFlag;
-	private String instructionDate;
-	private String settlementDate;
-	private String pattern = "dd MMM yyyy";
+	private LocalDate settlementDate;
+	private LocalDate instructionDate;
 
-	public ObjectId getId() {
+	public LocalDate getSettlementDate() {
+		return settlementDate;
+	}
+
+	public void setSettlementDate(LocalDate settlementDate) {
+		this.settlementDate = getAdjustedSettlementDate(settlementDate);
+	}
+
+	public LocalDate getInstructionDate() {
+		return instructionDate;
+	}
+
+	public void setInstructionDate(LocalDate instructionDate) {
+		this.instructionDate = instructionDate;
+	}
+
+	public String getId() {
 		return _id;
 	}
 
-	public void setId(ObjectId id) {
+	public void setId(String id) {
 		this._id = id;
-	}
-	
-	public String getPattern() {
-		return pattern;
-	}
-
-	public void setPattern(String pattern) {
-		this.pattern = pattern;
-	}
-
-	public String getTraderName() {
-		return traderName;
-	}
-
-	public void setTraderName(String traderName) {
-		this.traderName = traderName;
 	}
 
 	public String getCurrency() {
@@ -90,44 +87,28 @@ public class TradeEntry {
 		this.buySellFlag = buySellFlag;
 	}
 
-	public String getInstructionDate() {
-		return instructionDate;
+	public void setAmount(Double amount) {
+		this.amount = this.unitPrice * this.units * this.agreedFx; 
+	}
+	
+	public Double getAmount() {
+		this.amount = this.unitPrice * this.units * this.agreedFx;
+		return this.amount;
+	}
+	
+	public Trader getTrader() {
+		return trader;
 	}
 
-	public void setInstructionDate(String instructionDate) {
-		this.instructionDate = instructionDate;
-	}
-
-	public void setSettlementDate(String settlementDate) {
-		this.settlementDate = settlementDate;
-
-	}
-
-	public LocalDate getSettlementDate(String pattern) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
-		LocalDate localDate = LocalDate.parse(this.settlementDate, formatter);
-		localDate = getSettlementDate(localDate);
-		return localDate;
-	}
-
-	public String getSettlementDate() {
-
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
-		LocalDate localDate = LocalDate.parse(this.settlementDate, formatter);
-		localDate = getSettlementDate(localDate);
-		return LocalDateTime.of(localDate, LocalTime.NOON).format(formatter);
-
-	}
-
-	public Double getAmountOfTrade() {
-		return this.unitPrice * this.units * this.agreedFx;
+	public void setTrader(Trader trader) {
+		this.trader = trader;
 	}
 
 	@Override
 	public String toString() {
-		return "[Trader Name : " + this.getTraderName() + " Amount: " + this.getAmountOfTrade() + " Buy/Sell Flag: "
+		return "[Trader Name : " + this.getTrader().getName() + " Amount: " + this.getAmount() + " Buy/Sell Flag: "
 				+ this.getBuySellFlag() + " AgreedFx: " + this.getAgreedFx() + " Currency: " + this.getCurrency()
-				+ " Instruction Date: " + this.getInstructionDate() + " Settlement Date: " + this.getSettlementDate()
+				+ " Instruction Date: " + this.instructionDate + " Settlement Date: " + this.settlementDate
 				+ " Units: " + this.getUnits() + " Unit Price: " + this.getUnitPrice() + "]";
 	}
 
@@ -139,11 +120,10 @@ public class TradeEntry {
 		}
 	}
 
-	private LocalDate getSettlementDate(LocalDate localDate) {
+	private LocalDate getAdjustedSettlementDate(LocalDate localDate) {
 		while (isWeekEnd(localDate)) {
 			localDate = localDate.plusDays(1);
 		}
 		return localDate;
 	}
-
 }
