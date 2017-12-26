@@ -4,7 +4,7 @@
 <title>Stock Filtered Reporting</title>
 
 <script src="/webjars/jquery/3.1.1/jquery.min.js"></script>
-
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> -->
 </head>
 <body style="background-color: black; color: green">
 
@@ -14,12 +14,15 @@
 				th:utext="${stockFilteredReporting}">${stockFilteredReporting}</pre>
 		</h3>
 	</center>
+    <form id="stockReporting" th:action="@{/stockReporting}" method="POST">
+	</form>
+	
 
 	<script>
 		$(document).ready(function() {
 			$("label").click(function(event) {
 				if ($(this).attr("name") != "header") {
-					window.location = "/stockReporting";
+					$('#stockReporting').submit();
 				}
 			});
 		});

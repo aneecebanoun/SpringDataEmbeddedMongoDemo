@@ -3,7 +3,7 @@
 <head>
 <title>Stock Reporting</title>
 <script src="/webjars/jquery/3.1.1/jquery.min.js"></script>
-
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> -->
 </head>
 <body style="background-color: black; color: green">
 
@@ -14,11 +14,11 @@
 	</center>
 
 
-	<form id="stockReporting" action="/stockReporting" method="POST">
+	<form id="stockReporting" th:action="@{/stockReporting}" method="POST">
 		<input type="hidden" id="sortingOption" name="sortingOption"
 			value="Amount" />
 	</form>
-	<form id="stockFilteredReporting" action="/stockFilteredReporting"
+	<form id="stockFilteredReporting" th:action="@{/stockFilteredReporting}"
 		method="POST">
 		<input type="hidden" id="searchKey" name="searchKey" value="ANY" /> <input
 			type="hidden" id="searchType" name="searchType" value="tid" />

@@ -14,7 +14,7 @@ public class ReportingDataService {
 	
 	private static final String DATE_PATTERN = "dd MMM yyyy";
 	public String[] months;
-	public final int RANDOM_ROWs = 3000;
+	public final int RANDOM_ROWs = 30;
 	
 	TradeEntryRepository tradeEntryRepository;
 
@@ -28,7 +28,7 @@ public class ReportingDataService {
 		months = new String[]{"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
 
 		Trader trader = new Trader();
-		trader.setName("Trader");
+		trader.setName("Trader*");
 		
 		TradeEntry buyer1 = new TradeEntry();
 		buyer1.setBuySellFlag('B');
@@ -102,7 +102,7 @@ public class ReportingDataService {
 		for(int i = 0; i < RANDOM_ROWs; i++){
 			TradeEntry traderEntry = new TradeEntry();
 
-			if(i%20 == 0){
+			if(i%3 == 0){
 				trader = new Trader();
 				trader.setName("TRADER: "+i);
 			}
