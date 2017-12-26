@@ -3,10 +3,6 @@ package banoun.aneece.services;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import banoun.aneece.model.TradeEntry;
@@ -14,54 +10,21 @@ import banoun.aneece.model.Trader;
 import banoun.aneece.repositories.TradeEntryRepository;
 
 @Service
-public class DataLoadingUtilityService {
+public class ReportingDataService {
 	
 	private static final String DATE_PATTERN = "dd MMM yyyy";
 	public String[] months;
 	public final int RANDOM_ROWs = 3000;
 	
 	TradeEntryRepository tradeEntryRepository;
-	
-	public List<TradeEntry> getAllTraderEntriesOrderedByCriteria(String criteria, Boolean ascOrder){
-		List<TradeEntry> orderedTraderEntries = new ArrayList<>();
-		switch (criteria) {
-		case "ID":
-			orderedTraderEntries = tradeEntryRepository.findAllByOrderByAmountDesc().stream().sorted(
-					(trader1, trader2) -> ascOrder ? trader1.getId().compareTo(trader2.getId()) : trader2.getId().compareTo(trader1.getId()) ).collect(Collectors.toList());
-			break;
-		case "Trader Name":
-			orderedTraderEntries = ascOrder ? tradeEntryRepository.findAllByOrderByTraderDescAmountDesc() : tradeEntryRepository.findAllByOrderByTraderAscAmountDesc();
-			break;
-		case "In/Out":
-			orderedTraderEntries = ascOrder ? tradeEntryRepository.findAllByOrderByBuySellFlagDescAmountDesc() : tradeEntryRepository.findAllByOrderByBuySellFlagAscAmountDesc();
-			break;
-		case "Settlement Date":
-			orderedTraderEntries = ascOrder ?  tradeEntryRepository.findAllByOrderBySettlementDateDescAmountDesc() : tradeEntryRepository.findAllByOrderBySettlementDateAscAmountDesc();
-			break;
-		case "Instruction Date":
-			orderedTraderEntries = ascOrder ? tradeEntryRepository.findAllByOrderByInstructionDateDescAmountDesc() : tradeEntryRepository.findAllByOrderByInstructionDateAscAmountDesc();
-			break;
-		case "Currency":
-			orderedTraderEntries = ascOrder ? tradeEntryRepository.findAllByOrderByCurrencyDescAmountDesc() : tradeEntryRepository.findAllByOrderByCurrencyAscAmountDesc();
-			break;
-		case "Agreed Fx":
-			orderedTraderEntries = ascOrder ? tradeEntryRepository.findAllByOrderByAgreedFxDescAmountDesc() : tradeEntryRepository.findAllByOrderByAgreedFxAscAmountDesc();
-			break;
-		case "Units":
-			orderedTraderEntries = ascOrder ? tradeEntryRepository.findAllByOrderByUnitsDescAmountDesc() : tradeEntryRepository.findAllByOrderByUnitsAscAmountDesc();
-			break;
-		case "Unit Price":
-			orderedTraderEntries = ascOrder ? tradeEntryRepository.findAllByOrderByUnitPriceDescAmountDesc() : tradeEntryRepository.findAllByOrderByUnitPriceAscAmountDesc();
-			break;
-		default:
-			orderedTraderEntries = ascOrder ? tradeEntryRepository.findAllByOrderByAmountDesc() : tradeEntryRepository.findAllByOrderByAmountAsc();
-		}
-		return orderedTraderEntries;
-	}
 
 	@Autowired
-	public DataLoadingUtilityService(TradeEntryRepository tradeEntryRepositories){
-		this.tradeEntryRepository = tradeEntryRepositories;
+	public ReportingDataService(TradeEntryRepository tradeEntryRepository){
+		this.tradeEntryRepository = tradeEntryRepository;
+		loadData();
+	}
+
+	private void loadData() {
 		months = new String[]{"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
 
 		Trader trader = new Trader();
@@ -127,12 +90,12 @@ public class DataLoadingUtilityService {
 		seller3.setUnitPrice(599.5);
 		seller3.setTrader(trader);
 
-		tradeEntryRepositories.save(seller1);
-		tradeEntryRepositories.save(seller2);
-		tradeEntryRepositories.save(seller3);
-		tradeEntryRepositories.save(buyer1);
-		tradeEntryRepositories.save(buyer2);
-		tradeEntryRepositories.save(buyer3);
+		tradeEntryRepository.save(seller1);
+		tradeEntryRepository.save(seller2);
+		tradeEntryRepository.save(seller3);
+		tradeEntryRepository.save(buyer1);
+		tradeEntryRepository.save(buyer2);
+		tradeEntryRepository.save(buyer3);
 
 		trader = new Trader();
 		trader.setName("TRADER");
@@ -163,7 +126,7 @@ public class DataLoadingUtilityService {
 			traderEntry.setSettlementDate(day);
 			traderEntry.setUnits(getRandomFromRange(10, 15000));
 			traderEntry.setUnitPrice(getRandomFromRange(30d, 15000d));
-			tradeEntryRepositories.save(traderEntry);
+			tradeEntryRepository.save(traderEntry);
 		}
 	}
 
