@@ -53,7 +53,7 @@ public class ReportingService {
 	private List<TradeEntry> getAllTraderEntriesOrderedByCriteria(String criteria, Boolean ascOrder){
 		List<TradeEntry> orderedTraderEntries = new ArrayList<>();
 		switch (criteria) {
-		case "ID":
+		case "Transaction ID":
 			orderedTraderEntries = tradeEntryRepository.findAllByOrderByAmountDesc().stream().sorted(
 					(trader1, trader2) -> ascOrder ? trader1.getId().compareTo(trader2.getId()) : trader2.getId().compareTo(trader1.getId()) ).collect(Collectors.toList());
 			break;
