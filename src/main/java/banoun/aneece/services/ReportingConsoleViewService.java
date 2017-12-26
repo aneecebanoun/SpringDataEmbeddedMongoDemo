@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,8 +21,7 @@ public class ReportingConsoleViewService {
 
 	private boolean[] toggleFlags = new boolean[10];
 	
-	private String[] tableHeaders = { "Transaction ID", "Trader Name", "In/Out", "Amount", "Settlement Date", "Instruction Date",
-			"Currency", "Agreed Fx", "Units", "Unit Price" };
+	private String[] tableHeaders = Stream.of(HEADERS.values()).map(e -> e.toString()).toArray(String[]::new); 
 
 	public Boolean getToggleHeaderFlage(String header){
 		return toggleFlags[Arrays.asList(tableHeaders).indexOf(header)];
@@ -29,8 +30,6 @@ public class ReportingConsoleViewService {
 	public void toggleHeaderFlage(String header){
 		toggleFlags[Arrays.asList(tableHeaders).indexOf(header.trim())] = !toggleFlags[Arrays.asList(tableHeaders).indexOf(header.trim())];
 	}
-
-	
 	
 	public String printReport(List<TradeEntry> tradeEnties, String header) {
 
@@ -55,7 +54,6 @@ public class ReportingConsoleViewService {
 		result.append(String.format(lineSeperator));
 
 		for (TradeEntry tradeEnty : tradeEnties) {
-
 			String fName = stringForKey(map, tradeEnty.getTrader().getName(), "tname");
 			String id = stringForKey(map, tradeEnty.getId(), "tid");
 			result.append(String.format(tableRowsAlignFormat, id, fName,
@@ -154,6 +152,43 @@ public class ReportingConsoleViewService {
             characters.add(c);
         for(char c = 'A'; c < 'Z'+1;c++)
             characters.add(c);
+    }
+
+    public static enum HEADERS{
+    	ID("Transaction ID"),
+    	NAME("Trader Name"),
+    	IN_OUT("In/Out"),
+    	AMOUNT("Amount"),
+    	SETTELMENT("Settlement Date"),
+    	INSTRUCTION("Instruction Date"),
+    	CURRENCY("Currency"),
+    	FX("Agreed Fx"),
+    	UNITS("Units"),
+    	UNIT_PRICE("Unit Price");
+
+    	private final String message;
+    	
+    	HEADERS(String message){
+    		this.message = message;
+    	}
+    	
+    	public String getMessage(){
+    		return message;
+    	}
+
+    	@Override
+    	public String toString() {
+    		return message;
+    	}
+    	
+    	static HEADERS getMatch(String matchText){
+    		try{
+    			return Stream.of(HEADERS.values()).filter(e -> e.toString().equals(matchText)).collect(Collectors.toList()).get(0);
+    		}catch(Exception e){
+    			return null;
+    		}
+    	}
+
     }
 
 }

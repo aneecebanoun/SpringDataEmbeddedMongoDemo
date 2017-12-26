@@ -14,7 +14,7 @@ public class ReportingDataService {
 	
 	private static final String DATE_PATTERN = "dd MMM yyyy";
 	public String[] months;
-	public final int RANDOM_ROWs = 30;
+	public final int RANDOM_ROWs = 300;
 	
 	TradeEntryRepository tradeEntryRepository;
 

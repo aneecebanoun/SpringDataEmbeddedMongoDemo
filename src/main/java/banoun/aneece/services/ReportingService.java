@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import banoun.aneece.model.TradeEntry;
 import banoun.aneece.repositories.TradeEntryRepository;
+import banoun.aneece.services.ReportingConsoleViewService.HEADERS;
 
 @Service
 public class ReportingService {
@@ -52,33 +53,33 @@ public class ReportingService {
 	
 	private List<TradeEntry> getAllTraderEntriesOrderedByCriteria(String criteria, Boolean ascOrder){
 		List<TradeEntry> orderedTraderEntries = new ArrayList<>();
-		switch (criteria) {
-		case "Transaction ID":
+		switch (HEADERS.getMatch(criteria)) {
+		case ID:
 			orderedTraderEntries = tradeEntryRepository.findAllByOrderByAmountDesc().stream().sorted(
 					(trader1, trader2) -> ascOrder ? trader1.getId().compareTo(trader2.getId()) : trader2.getId().compareTo(trader1.getId()) ).collect(Collectors.toList());
 			break;
-		case "Trader Name":
+		case NAME:
 			orderedTraderEntries = ascOrder ? tradeEntryRepository.findAllByOrderByTraderDescAmountDesc() : tradeEntryRepository.findAllByOrderByTraderAscAmountDesc();
 			break;
-		case "In/Out":
+		case IN_OUT:
 			orderedTraderEntries = ascOrder ? tradeEntryRepository.findAllByOrderByBuySellFlagDescAmountDesc() : tradeEntryRepository.findAllByOrderByBuySellFlagAscAmountDesc();
 			break;
-		case "Settlement Date":
+		case SETTELMENT:
 			orderedTraderEntries = ascOrder ?  tradeEntryRepository.findAllByOrderBySettlementDateDescAmountDesc() : tradeEntryRepository.findAllByOrderBySettlementDateAscAmountDesc();
 			break;
-		case "Instruction Date":
+		case INSTRUCTION:
 			orderedTraderEntries = ascOrder ? tradeEntryRepository.findAllByOrderByInstructionDateDescAmountDesc() : tradeEntryRepository.findAllByOrderByInstructionDateAscAmountDesc();
 			break;
-		case "Currency":
+		case CURRENCY:
 			orderedTraderEntries = ascOrder ? tradeEntryRepository.findAllByOrderByCurrencyDescAmountDesc() : tradeEntryRepository.findAllByOrderByCurrencyAscAmountDesc();
 			break;
-		case "Agreed Fx":
+		case FX:
 			orderedTraderEntries = ascOrder ? tradeEntryRepository.findAllByOrderByAgreedFxDescAmountDesc() : tradeEntryRepository.findAllByOrderByAgreedFxAscAmountDesc();
 			break;
-		case "Units":
+		case UNITS:
 			orderedTraderEntries = ascOrder ? tradeEntryRepository.findAllByOrderByUnitsDescAmountDesc() : tradeEntryRepository.findAllByOrderByUnitsAscAmountDesc();
 			break;
-		case "Unit Price":
+		case UNIT_PRICE:
 			orderedTraderEntries = ascOrder ? tradeEntryRepository.findAllByOrderByUnitPriceDescAmountDesc() : tradeEntryRepository.findAllByOrderByUnitPriceAscAmountDesc();
 			break;
 		default:
