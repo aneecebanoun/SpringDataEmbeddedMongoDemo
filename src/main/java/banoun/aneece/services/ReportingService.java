@@ -43,10 +43,12 @@ public class ReportingService {
 	
 	private String printFilteredReport(String key, String type) {
 		StringBuffer result = new StringBuffer();
-		result.append(reportingConsoleViewService.printReport(getAllTraderEntriesOrderedByCriteria("*", true)
+		result.append(reportingConsoleViewService.printReport(
+				getAllTraderEntriesOrderedByCriteria("*", true)
 				.stream()
 				.filter(trader -> type.equals("tid")? trader.getId().equals(key):trader.getTrader().getName().equals(key))
-				.collect(Collectors.toList()), "Look up result for: ***"+key+"***"));
+				.collect(Collectors.toList()), 
+				"Look up result for: ***"+key+"***"));
 
 		return result.toString();
 	}
@@ -55,35 +57,53 @@ public class ReportingService {
 		List<TradeEntry> orderedTraderEntries = new ArrayList<>();
 		switch (HEADERS.getMatch(criteria)) {
 		case ID:
-			orderedTraderEntries = tradeEntryRepository.findAllByOrderByAmountDesc().stream().sorted(
+			orderedTraderEntries = tradeEntryRepository.findAllByOrderByAmountDesc().sorted(
 					(trader1, trader2) -> ascOrder ? trader1.getId().compareTo(trader2.getId()) : trader2.getId().compareTo(trader1.getId()) ).collect(Collectors.toList());
 			break;
 		case NAME:
-			orderedTraderEntries = ascOrder ? tradeEntryRepository.findAllByOrderByTraderDescAmountDesc() : tradeEntryRepository.findAllByOrderByTraderAscAmountDesc();
+			orderedTraderEntries = ascOrder ? 
+					tradeEntryRepository.findAllByOrderByTraderDescAmountDesc().parallel().collect(Collectors.toList()) : 
+					tradeEntryRepository.findAllByOrderByTraderAscAmountDesc().parallel().collect(Collectors.toList());
 			break;
 		case IN_OUT:
-			orderedTraderEntries = ascOrder ? tradeEntryRepository.findAllByOrderByBuySellFlagDescAmountDesc() : tradeEntryRepository.findAllByOrderByBuySellFlagAscAmountDesc();
+			orderedTraderEntries = ascOrder ? 
+					tradeEntryRepository.findAllByOrderByBuySellFlagDescAmountDesc().parallel().collect(Collectors.toList()) : 
+					tradeEntryRepository.findAllByOrderByBuySellFlagAscAmountDesc().parallel().collect(Collectors.toList());
 			break;
 		case SETTELMENT:
-			orderedTraderEntries = ascOrder ?  tradeEntryRepository.findAllByOrderBySettlementDateDescAmountDesc() : tradeEntryRepository.findAllByOrderBySettlementDateAscAmountDesc();
+			orderedTraderEntries = ascOrder ?  
+					tradeEntryRepository.findAllByOrderBySettlementDateDescAmountDesc().parallel().collect(Collectors.toList()) : 
+					tradeEntryRepository.findAllByOrderBySettlementDateAscAmountDesc().parallel().collect(Collectors.toList());
 			break;
 		case INSTRUCTION:
-			orderedTraderEntries = ascOrder ? tradeEntryRepository.findAllByOrderByInstructionDateDescAmountDesc() : tradeEntryRepository.findAllByOrderByInstructionDateAscAmountDesc();
+			orderedTraderEntries = ascOrder ? 
+					tradeEntryRepository.findAllByOrderByInstructionDateDescAmountDesc().parallel().collect(Collectors.toList()) : 
+					tradeEntryRepository.findAllByOrderByInstructionDateAscAmountDesc().parallel().collect(Collectors.toList());
 			break;
 		case CURRENCY:
-			orderedTraderEntries = ascOrder ? tradeEntryRepository.findAllByOrderByCurrencyDescAmountDesc() : tradeEntryRepository.findAllByOrderByCurrencyAscAmountDesc();
+			orderedTraderEntries = ascOrder ? 
+					tradeEntryRepository.findAllByOrderByCurrencyDescAmountDesc().parallel().collect(Collectors.toList()) : 
+					tradeEntryRepository.findAllByOrderByCurrencyAscAmountDesc().parallel().collect(Collectors.toList());
 			break;
 		case FX:
-			orderedTraderEntries = ascOrder ? tradeEntryRepository.findAllByOrderByAgreedFxDescAmountDesc() : tradeEntryRepository.findAllByOrderByAgreedFxAscAmountDesc();
+			orderedTraderEntries = ascOrder ? 
+					tradeEntryRepository.findAllByOrderByAgreedFxDescAmountDesc().parallel().collect(Collectors.toList()) : 
+					tradeEntryRepository.findAllByOrderByAgreedFxAscAmountDesc().parallel().collect(Collectors.toList());
 			break;
 		case UNITS:
-			orderedTraderEntries = ascOrder ? tradeEntryRepository.findAllByOrderByUnitsDescAmountDesc() : tradeEntryRepository.findAllByOrderByUnitsAscAmountDesc();
+			orderedTraderEntries = ascOrder ? 
+					tradeEntryRepository.findAllByOrderByUnitsDescAmountDesc().parallel().collect(Collectors.toList()) : 
+					tradeEntryRepository.findAllByOrderByUnitsAscAmountDesc().parallel().collect(Collectors.toList());
 			break;
 		case UNIT_PRICE:
-			orderedTraderEntries = ascOrder ? tradeEntryRepository.findAllByOrderByUnitPriceDescAmountDesc() : tradeEntryRepository.findAllByOrderByUnitPriceAscAmountDesc();
+			orderedTraderEntries = ascOrder ? 
+					tradeEntryRepository.findAllByOrderByUnitPriceDescAmountDesc().parallel().collect(Collectors.toList()) : 
+					tradeEntryRepository.findAllByOrderByUnitPriceAscAmountDesc().parallel().collect(Collectors.toList());
 			break;
 		default:
-			orderedTraderEntries = ascOrder ? tradeEntryRepository.findAllByOrderByAmountDesc() : tradeEntryRepository.findAllByOrderByAmountAsc();
+			orderedTraderEntries = ascOrder ? 
+					tradeEntryRepository.findAllByOrderByAmountDesc().parallel().collect(Collectors.toList()) : 
+					tradeEntryRepository.findAllByOrderByAmountAsc().parallel().collect(Collectors.toList());
 		}
 		return orderedTraderEntries;
 	}

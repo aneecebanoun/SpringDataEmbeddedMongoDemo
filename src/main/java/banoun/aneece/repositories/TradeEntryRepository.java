@@ -1,39 +1,35 @@
 package banoun.aneece.repositories;
-
-import java.util.List;
-
-
+import java.util.stream.Stream;
 import org.springframework.data.repository.CrudRepository;
-
 import banoun.aneece.model.TradeEntry;
 
 public interface  TradeEntryRepository extends CrudRepository<TradeEntry, String>{
 	
-	List<TradeEntry> findAllByOrderByTraderAscAmountDesc();
-	List<TradeEntry> findAllByOrderByTraderDescAmountDesc();
+	Stream<TradeEntry> findAllByOrderByTraderAscAmountDesc();
+	Stream<TradeEntry> findAllByOrderByTraderDescAmountDesc();
 
-	List<TradeEntry> findAllByOrderByCurrencyAscAmountDesc();
-	List<TradeEntry> findAllByOrderByCurrencyDescAmountDesc();
+	Stream<TradeEntry> findAllByOrderByCurrencyAscAmountDesc();
+	Stream<TradeEntry> findAllByOrderByCurrencyDescAmountDesc();
 
-	List<TradeEntry> findAllByOrderByUnitPriceAscAmountDesc();
-	List<TradeEntry> findAllByOrderByUnitPriceDescAmountDesc();
+	Stream<TradeEntry> findAllByOrderByUnitPriceAscAmountDesc();
+	Stream<TradeEntry> findAllByOrderByUnitPriceDescAmountDesc();
 
-	List<TradeEntry> findAllByOrderByUnitsAscAmountDesc();
-	List<TradeEntry> findAllByOrderByUnitsDescAmountDesc();
+	Stream<TradeEntry> findAllByOrderByUnitsAscAmountDesc();
+	Stream<TradeEntry> findAllByOrderByUnitsDescAmountDesc();
 
-	List<TradeEntry> findAllByOrderByAgreedFxAscAmountDesc();
-	List<TradeEntry> findAllByOrderByAgreedFxDescAmountDesc();
+	Stream<TradeEntry> findAllByOrderByAgreedFxAscAmountDesc();
+	Stream<TradeEntry> findAllByOrderByAgreedFxDescAmountDesc();
 
-	List<TradeEntry> findAllByOrderByBuySellFlagAscAmountDesc();
-	List<TradeEntry> findAllByOrderByBuySellFlagDescAmountDesc();
+	Stream<TradeEntry> findAllByOrderByBuySellFlagAscAmountDesc();
+	Stream<TradeEntry> findAllByOrderByBuySellFlagDescAmountDesc();
 	
-	List<TradeEntry> findAllByOrderByAmountAsc();
-	List<TradeEntry> findAllByOrderByAmountDesc();
+	Stream<TradeEntry> findAllByOrderByAmountAsc();
+	Stream<TradeEntry> findAllByOrderByAmountDesc();
 	
-	List<TradeEntry> findAllByOrderBySettlementDateAscAmountDesc();
-	List<TradeEntry> findAllByOrderBySettlementDateDescAmountDesc();
+	Stream<TradeEntry> findAllByOrderBySettlementDateAscAmountDesc();
+	Stream<TradeEntry> findAllByOrderBySettlementDateDescAmountDesc();
 	
-	List<TradeEntry> findAllByOrderByInstructionDateAscAmountDesc();
-	List<TradeEntry> findAllByOrderByInstructionDateDescAmountDesc();
+	Stream<TradeEntry> findAllByOrderByInstructionDateAscAmountDesc();
+	Stream<TradeEntry> findAllByOrderByInstructionDateDescAmountDesc();
 
 }

@@ -32,7 +32,6 @@ public class ReportingConsoleViewService {
 	}
 	
 	public String printReport(List<TradeEntry> tradeEnties, String header) {
-
 		Map<String, String> map = new HashMap<>();
 		StringBuffer result = new StringBuffer();
 		String cornerChar = "*";
@@ -67,7 +66,7 @@ public class ReportingConsoleViewService {
 					String.format("%.2f", tradeEnty.getUnitPrice())));
 		}
 		result.append(String.format(lineSeperator));
-		return addHtmlTagToTableHeaders(tableHeaders, result.toString(), map);
+		return replaceKeysForHtmlField(result.toString(), map);
 	}
 
 	private int[] adjustWidthForData(List<TradeEntry> tradeEnties, String[] cHeaders) {
@@ -107,34 +106,37 @@ public class ReportingConsoleViewService {
 		return seperator + "%n";
 	}
 	
-	private String getToAddress(String text, String name){
+	private String tagRowField(String text, String name){
 		String colour = name.equals("tid")?"red":"yellow";
 		return String.format("<label name='%s' style='color:%s'>%s</label>", name, colour, text);
 	}
 	
-	private String addHtmlTagToTableHeaders(String[] tableHeaders, String table, Map<String, String> map){
-		for(String key : map.keySet()){
-			table = table.replace(key, map.get(key));
-		}
-		return table;
+	private String replaceKeysForHtmlField(String table, Map<String, String> map){
+		String tableKey = stringForKey(map, "*ANY*", "th");
+		map.put(tableKey, table);
+		map.keySet().stream().forEach(key -> map.put(tableKey, map.get(tableKey).replace(key, map.get(key))));
+		return map.get(tableKey);
 	}
 
     private String randomSequenceForText(String inText){
     	int numberOfCharacters = inText.length();
         StringBuffer word = new StringBuffer();
         for(int i = 0; i < numberOfCharacters; i++){
-            int randomIndex = (int)(Math.random() * characters.size()) ;
-            word.append( characters.get(randomIndex).toString() );
+            int randomIndex = (int)(Math.random() * characters.length) ;
+            word.append(characters[randomIndex].toString());
         }
         return word.toString();
     }
 	
 	private String stringForKey(Map<String, String> map, String inText, String formatFlag){
 		String key = randomSequenceForText(inText);
+		String htmlFormattedText = formatFlag.equals("th")? addHtmlTag(inText, "label name='header' style='color:white'") : tagRowField(inText, formatFlag);
+		if(map.containsValue(htmlFormattedText)){
+			return map.keySet().stream().filter(k -> map.get(k).equals(htmlFormattedText) ).collect(Collectors.toList()).get(0);
+		}
 		while(map.containsKey(key)){
 			key = randomSequenceForText(inText);
 		}
-		String htmlFormattedText = formatFlag.equals("th")? addHtmlTag(inText, "label name='header' style='color:white'") : getToAddress(inText, formatFlag); 
 		map.put(key, htmlFormattedText);
 		return key;
 	}
@@ -142,16 +144,18 @@ public class ReportingConsoleViewService {
 	private static String addHtmlTag(String text, String tagNameAndAttribute){
 		return String.format("<%s>%s</%s>", tagNameAndAttribute, text, tagNameAndAttribute.split(" ")[0]);
 	}
-	
-    static List<Character> characters = new ArrayList<>();
+    
+    static Character[] characters;
     
     static{
+    	List<Character> charactersList = new ArrayList<>();
         for(char c = '0'; c < '9'+1;c++)
-            characters.add(c);
+            charactersList.add(c);
         for(char c = 'a'; c < 'z'+1;c++)
-            characters.add(c);
+            charactersList.add(c);
         for(char c = 'A'; c < 'Z'+1;c++)
-            characters.add(c);
+            charactersList.add(c);
+        characters =  charactersList.stream().toArray(Character[]::new);
     }
 
     public static enum HEADERS{
@@ -185,10 +189,9 @@ public class ReportingConsoleViewService {
     		try{
     			return Stream.of(HEADERS.values()).filter(e -> e.toString().equals(matchText)).collect(Collectors.toList()).get(0);
     		}catch(Exception e){
-    			return null;
+    			return AMOUNT;
     		}
     	}
-
     }
 
 }
