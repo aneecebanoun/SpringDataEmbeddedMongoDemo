@@ -1,12 +1,14 @@
 package banoun.aneece.services;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import banoun.aneece.model.TradeEntry;
 import banoun.aneece.repositories.TradeEntryRepository;
+import banoun.aneece.repositories.TraderRepository;
 import banoun.aneece.services.ReportingConsoleViewService.HEADERS;
 
 @Service
@@ -14,6 +16,8 @@ public class ReportingService {
 	
 	@Autowired
 	TradeEntryRepository tradeEntryRepository;
+	@Autowired
+	TraderRepository traderRepository;
 	@Autowired
 	ReportingConsoleViewService reportingConsoleViewService;
 	
@@ -42,15 +46,10 @@ public class ReportingService {
 	}
 	
 	private String printFilteredReport(String key, String type) {
-		StringBuffer result = new StringBuffer();
-		result.append(reportingConsoleViewService.printReport(
-				getAllTraderEntriesOrderedByCriteria("*", true)
-				.stream()
-				.filter(trader -> type.equals("tid")? trader.getId().equals(key):trader.getTrader().getName().equals(key))
-				.collect(Collectors.toList()), 
-				"Look up result for: ***"+key+"***"));
-
-		return result.toString();
+		List<TradeEntry> trades = type.equals("tid")?  
+			Arrays.asList(tradeEntryRepository.findAllById(Arrays.asList(key)).iterator().next()):
+			tradeEntryRepository.findByTraderOrderByAmountDesc(traderRepository.findByName(key)).parallel().collect(Collectors.toList());
+		return 	new StringBuffer(reportingConsoleViewService.printReport( trades, "Look up result for: ***"+key+"***")).toString();
 	}
 	
 	private List<TradeEntry> getAllTraderEntriesOrderedByCriteria(String criteria, Boolean ascOrder){
