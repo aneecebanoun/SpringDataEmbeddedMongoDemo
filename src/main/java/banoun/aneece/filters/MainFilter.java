@@ -11,6 +11,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletRequest;
 
 import banoun.aneece.filters.utils.HtmlCharacterResponseWrapper;
 @WebFilter(filterName = "mainFilter", urlPatterns = "/*")
@@ -31,7 +32,8 @@ public class MainFilter implements Filter{
 	}
 
 	private void addPageHeaderAndFooter(ServletRequest request, ServletResponse response, byte[] bytes) throws IOException {
-		String baseUrl = "/";
+		HttpServletRequest httpRequest = (HttpServletRequest)request;
+		String baseUrl = httpRequest.getRequestURL().substring(0, httpRequest.getRequestURL().length() - httpRequest.getRequestURI().length() + httpRequest.getContextPath().length()) + "/";
 		String performanceUrl =  baseUrl + "dbPerformance";
 		String link = "<a href='%s'style='color: %s'>%s</a>";
 		String performanceLink = String.format(link, performanceUrl, "yellow","Performance Test");
