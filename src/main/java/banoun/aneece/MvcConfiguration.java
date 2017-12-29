@@ -1,20 +1,20 @@
 package banoun.aneece;
 
 import java.io.IOException;
+import javax.servlet.Filter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoTemplate;
-
 import com.mongodb.MongoClient;
-
+import banoun.aneece.filters.MainFilter;
 import banoun.aneece.model.TradeEntryListener;
 import cz.jirutka.spring.embedmongo.EmbeddedMongoFactoryBean;
 
 @Configuration
 @ComponentScan
-public class MvcConfiguration{
+public class MvcConfiguration {
 	
 	@Value("${bind.ip}")
     private String mongoURL;
@@ -34,6 +34,11 @@ public class MvcConfiguration{
         MongoClient mongoClient = mongo.getObject();
         MongoTemplate mongoTemplate = new MongoTemplate(mongoClient, mongoDB_Name);
         return mongoTemplate;
+    }
+    
+    @Bean
+    public Filter mainFilter(){
+    	return new MainFilter();
     }
 
     

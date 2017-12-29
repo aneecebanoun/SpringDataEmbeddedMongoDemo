@@ -2,7 +2,9 @@ package banoun.aneece.services;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,18 +40,24 @@ public class ReportingService {
 	}
 	
 	private String printSortedReport(String header) {
+		Map<String, String> map = new HashMap<>();
 		StringBuffer result = new StringBuffer();
 		List<TradeEntry> traderEntries = getAllTraderEntriesOrderedByCriteria(header, reportingConsoleViewService.getToggleHeaderFlage(header));
 		this.toggleHeaderFlage(header);
-		result.append(reportingConsoleViewService.printReport(traderEntries, "All Buy/Sell Traders (Outgoing/Incoming)"));
+		result.append(reportingConsoleViewService.printReport(traderEntries, "All Buy/Sell Traders (Outgoing/Incoming)", map));
 		return result.toString();
 	}
 	
 	private String printFilteredReport(String key, String type) {
+		Map<String, String> map = new HashMap<>();
 		List<TradeEntry> trades = type.equals("tid")?  
 			Arrays.asList(tradeEntryRepository.findAllById(Arrays.asList(key)).iterator().next()):
 			tradeEntryRepository.findByTraderOrderByAmountDesc(traderRepository.findByName(key)).parallel().collect(Collectors.toList());
-		return 	new StringBuffer(reportingConsoleViewService.printReport( trades, "Look up result for: ***"+key+"***")).toString();
+		String traderId = reportingConsoleViewService.stringForKey(map, "("+trades.get(0).getTrader().getId()+")", "th");
+		String traderName = reportingConsoleViewService.stringForKey(map, "("+trades.get(0).getTrader().getName()+")", "th");
+		String rsSize = reportingConsoleViewService.stringForKey(map, "(*"+trades.size()+""+"*)", "th");
+		String tableTitle = String.format("Look up result for: ***%s*** total number of result set: %s; ID for %s is: %s", key, rsSize, traderName, traderId);
+		return 	new StringBuffer(reportingConsoleViewService.printReport( trades, tableTitle, map)).toString();
 	}
 	
 	private List<TradeEntry> getAllTraderEntriesOrderedByCriteria(String criteria, Boolean ascOrder){

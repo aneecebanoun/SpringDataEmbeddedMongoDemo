@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import banoun.aneece.model.TradeEntry;
 import banoun.aneece.model.Trader;
@@ -11,19 +12,29 @@ import banoun.aneece.repositories.TradeEntryRepository;
 
 @Service
 public class ReportingDataService {
-	
-	private static final String DATE_PATTERN = "dd MMM yyyy";
-	public String[] months;
-	public final int RANDOM_ROWs = 300;
-	
+
+	private  int dataSize;
+	private final String DATE_PATTERN = "dd MMM yyyy";
+	private  String[] months;
+	private  final String dataLoadingTime;
+
 	TradeEntryRepository tradeEntryRepository;
 
 	@Autowired
-	public ReportingDataService(TradeEntryRepository tradeEntryRepository){
+	public ReportingDataService(TradeEntryRepository tradeEntryRepository, @Value("${datarandom.rows}")int dataSize){
+
 		this.tradeEntryRepository = tradeEntryRepository;
+		this.dataSize = dataSize;
+		long start = System.currentTimeMillis();
 		loadData();
+		long end = System.currentTimeMillis();
+		dataLoadingTime = "Loading " + dataSize + " RECORD takes: " + this.timing(start, end);
 	}
 
+	public String getDataLoadingTime() {
+		return dataLoadingTime;
+	}
+	
 	private void loadData() {
 		months = new String[]{"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
 
@@ -99,12 +110,14 @@ public class ReportingDataService {
 
 		trader = new Trader();
 		trader.setName("TRADER");
-		for(int i = 0; i < RANDOM_ROWs; i++){
+		int traderFrequency = getRandomFromRange((int)dataSize/18,(int)dataSize/12);
+		for(int i = 0; i < dataSize; i++){
 			TradeEntry traderEntry = new TradeEntry();
 
-			if(i%3 == 0){
+			if(i%traderFrequency == 0){
 				trader = new Trader();
 				trader.setName("TRADER: "+i);
+				traderFrequency = getRandomFromRange((int)dataSize/18,(int)dataSize/12);
 			}
 			traderEntry.setTrader(trader);
 			if(i%2 == 0){
@@ -184,5 +197,17 @@ public class ReportingDataService {
 		double range = max - min;
 		return  min + Math.random() * range;
 	}
+	
+	public String timing(long start, long end){
+		String time = "";
+		int mSeconds = (int) (end - start);
+		int seconds = (int) (mSeconds/1000);
+		int  minutes =  (int)(seconds/60);
+		seconds = seconds%60;
+		mSeconds = mSeconds%1000;
+		time = "m:s:ms "+ minutes + ":"+seconds+":"+mSeconds;
+		return time;
+	}
+
 
 }

@@ -31,8 +31,7 @@ public class ReportingConsoleViewService {
 		toggleFlags[Arrays.asList(tableHeaders).indexOf(header.trim())] = !toggleFlags[Arrays.asList(tableHeaders).indexOf(header.trim())];
 	}
 	
-	public String printReport(List<TradeEntry> tradeEnties, String header) {
-		Map<String, String> map = new HashMap<>();
+	public String printReport(List<TradeEntry> tradeEnties, String header, Map<String, String> map) {
 		StringBuffer result = new StringBuffer();
 		String cornerChar = "*";
 		String lineChar = "-";
@@ -128,7 +127,7 @@ public class ReportingConsoleViewService {
         return word.toString();
     }
 	
-	private String stringForKey(Map<String, String> map, String inText, String formatFlag){
+	public String stringForKey(Map<String, String> map, String inText, String formatFlag){
 		String key = randomSequenceForText(inText);
 		String htmlFormattedText = formatFlag.equals("th")? addHtmlTag(inText, "label name='header' style='color:white'") : tagRowField(inText, formatFlag);
 		if(map.containsValue(htmlFormattedText)){
