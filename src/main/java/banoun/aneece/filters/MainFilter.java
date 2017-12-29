@@ -50,17 +50,16 @@ public class MainFilter implements Filter{
 		response.getOutputStream().write(page.getBytes());
 	}
 	
-	private String getTagStarting(String page, String tag){
-		String bodyTag = "<"+tag;
-		page.indexOf(bodyTag);
-		for(int i = page.indexOf(bodyTag)+5; i < page.length(); i++){
+	private String getTagStarting(String page, String tagName){
+		String tag = "<"+tagName;
+		for(int i = page.indexOf(tag)+5; i < page.length(); i++){
 			if(page.charAt(i) == '>'){
-				bodyTag += '>';
+				tag += '>';
 				break;
 			}
-			bodyTag += page.charAt(i);
+			tag += page.charAt(i);
 		}
-		return bodyTag;
+		return tag;
 	}
 	
 	private String getFormattedDateTime(){
