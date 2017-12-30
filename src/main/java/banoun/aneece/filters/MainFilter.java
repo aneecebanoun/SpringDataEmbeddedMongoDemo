@@ -17,7 +17,6 @@ import banoun.aneece.filters.utils.HtmlCharacterResponseWrapper;
 @WebFilter(filterName = "mainFilter", urlPatterns = "/*")
 public class MainFilter implements Filter{
 
-
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
@@ -43,8 +42,8 @@ public class MainFilter implements Filter{
 		String bodyTag = getTagStarting(page, "body");
 		String bodyClosingTag = "</body>";
 		String appTitle = "SPRING DATA MONGODB DEMO!";
-		String pageHeader = String.format("%s<center>%s<***>%s<br/><h2 style='color: gold'>%s (%s)</h2></center>", bodyTag, homeLink, performanceLink, appTitle, now);
-		String pageFooter = String.format("<center><h3 style='color: red'>%s</h3></center>%s", now.toString(), bodyClosingTag);
+		String pageHeader = String.format("%s<center>%s<label3 style='color: red'><***%s***></label3>%s<br/><h2 style='color: gold'>%s</h2></center>", bodyTag, homeLink, now, performanceLink, appTitle);
+		String pageFooter = String.format("<center><h3 style='color: red'>%s</h3></center>%s", now, bodyClosingTag);
 		page = page.replace(bodyTag, pageHeader);
 		page = page.replace(bodyClosingTag, pageFooter);
 		response.getOutputStream().write(page.getBytes());
@@ -52,7 +51,8 @@ public class MainFilter implements Filter{
 	
 	private String getTagStarting(String page, String tagName){
 		String tag = "<"+tagName;
-		for(int i = page.indexOf(tag)+5; i < page.length(); i++){
+		int tagStartIndex = page.indexOf(tag)+tagName.length()+1;
+		for(int i = tagStartIndex; i < page.length(); i++){
 			if(page.charAt(i) == '>'){
 				tag += '>';
 				break;
