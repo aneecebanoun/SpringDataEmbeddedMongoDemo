@@ -7,17 +7,12 @@
 <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> -->
 </head>
 <body style="background-color: black; color: green">
-
-	<center>
 		<h3>
-			<pre style="white-space: pre-wrap;"
+			<pre style="white-space: pre-wrap; overflow: auto; height:600px; width:1600px"
 				th:utext="${stockFilteredReporting}">${stockFilteredReporting}</pre>
 		</h3>
-	</center>
     <form id="stockReporting" th:action="@{/stockReporting}" method="POST">
 	</form>
-	
-
 	<script>
 		$(document).ready(function() {
 			$("label").click(function(event) {

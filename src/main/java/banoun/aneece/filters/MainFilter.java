@@ -42,8 +42,8 @@ public class MainFilter implements Filter{
 		String bodyTag = getTagStarting(page, "body");
 		String bodyClosingTag = "</body>";
 		String appTitle = "SPRING DATA MONGODB DEMO!";
-		String pageHeader = String.format("%s<center>%s<label3 style='color: red'><***%s***></label3>%s<br/><h2 style='color: gold'>%s</h2></center>", bodyTag, homeLink, now, performanceLink, appTitle);
-		String pageFooter = String.format("<center><h3 style='color: red'>%s</h3></center>%s", now, bodyClosingTag);
+		String pageHeader = String.format("%s<center>%s <label3 style='color: red'>(%s)</label3> %s<br/><h2 style='color: gold'>%s</h2>", bodyTag, homeLink, now, performanceLink, appTitle);
+		String pageFooter = String.format("<h3 style='color: red'>%s</h3></center>%s", now, bodyClosingTag);
 		page = page.replace(bodyTag, pageHeader);
 		page = page.replace(bodyClosingTag, pageFooter);
 		response.getOutputStream().write(page.getBytes());

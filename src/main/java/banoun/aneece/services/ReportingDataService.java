@@ -28,7 +28,7 @@ public class ReportingDataService {
 		long start = System.currentTimeMillis();
 		loadData();
 		long end = System.currentTimeMillis();
-		dataLoadingTime = "Loading " + dataSize + " RECORD takes: " + this.timing(start, end);
+		dataLoadingTime = "Time to INSERT (" + (dataSize+6) + ") RECORD takes: " + this.timing(start, end);
 	}
 
 	public String getDataLoadingTime() {
