@@ -4,6 +4,7 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import banoun.aneece.model.TradeEntry;
+import banoun.aneece.model.Trader;
 import banoun.aneece.repositories.TradeEntryRepository;
 import banoun.aneece.repositories.TraderRepository;
 import banoun.aneece.services.ReportingDataService;
@@ -30,15 +32,24 @@ public class PerformanceController {
 	
 	@RequestMapping("/dbPerformance")
 	public String dbPerformance(Model model,final HttpServletRequest request, final HttpServletResponse response){
-		model.addAttribute("loadTime", reportingDataService.getDataLoadingTime());
 		long start = System.currentTimeMillis();
-		List<TradeEntry> tradeEntryList = new ArrayList<>(); 
-		tradeEntryRepository.findAll().forEach(tradeEntryList::add);
+		List<TradeEntry> tradeEntryList = reportingDataService.loadData(300);
 		long end = System.currentTimeMillis();
-		String queryTime = "Time to QUERY (" +tradeEntryList.size()+") RECORD takes: "+reportingDataService.timing(start, end);
+		String insertionTime = "Time to INSERT (" +tradeEntryList.size()+") RECORD takes: "+reportingDataService.timing(start, end);
+		start = System.currentTimeMillis();
+		List<Trader> traders = tradeEntryList.stream().parallel().map(tradeEntry -> tradeEntry.getTrader()).collect(Collectors.toList());
+		List<TradeEntry> qtradeEntryList = new ArrayList<>(); 
+		tradeEntryRepository.findByTraderInOrderByAmountDesc(traders).parallel().forEach(qtradeEntryList::add);
+		end = System.currentTimeMillis();
+		String queryTime = "Time to QUERY (" +qtradeEntryList.size()+") RECORD takes: "+reportingDataService.timing(start, end);
+		start = System.currentTimeMillis();
+		tradeEntryRepository.deleteAll(tradeEntryList);
+		end = System.currentTimeMillis();
+		String deleteTime = "Time to DELETE (" +tradeEntryList.size()+") RECORD takes: "+reportingDataService.timing(start, end);
+		model.addAttribute("insertionTime", insertionTime);
 		model.addAttribute("queryTime", queryTime);
+		model.addAttribute("deleteTime", deleteTime);
 		model.addAttribute("systemInfo", getSystemInfo());
-		
 		return "dbPerformance";
 	}
 	private String getSystemInfo(){

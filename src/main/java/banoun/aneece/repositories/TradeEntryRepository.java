@@ -1,4 +1,5 @@
 package banoun.aneece.repositories;
+import java.util.List;
 import java.util.stream.Stream;
 import org.springframework.data.repository.CrudRepository;
 import banoun.aneece.model.TradeEntry;
@@ -9,7 +10,8 @@ public interface  TradeEntryRepository extends CrudRepository<TradeEntry, String
 	Stream<TradeEntry> findAllByOrderByTraderAscAmountDesc();
 	Stream<TradeEntry> findAllByOrderByTraderDescAmountDesc();
 	
-	Stream<TradeEntry> findByTraderOrderByAmountDesc(Trader trader);
+//	Stream<TradeEntry> findByTraderOrderByAmountDesc(Trader trader);
+	Stream<TradeEntry> findByTraderInOrderByAmountDesc(List<Trader> trader);
 
 	Stream<TradeEntry> findAllByOrderByCurrencyAscAmountDesc();
 	Stream<TradeEntry> findAllByOrderByCurrencyDescAmountDesc();

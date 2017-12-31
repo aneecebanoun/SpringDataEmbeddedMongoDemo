@@ -3,6 +3,9 @@ package banoun.aneece.services;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -16,23 +19,14 @@ public class ReportingDataService {
 	private  int dataSize;
 	private final String DATE_PATTERN = "dd MMM yyyy";
 	private  String[] months;
-	private  final String dataLoadingTime;
 
 	TradeEntryRepository tradeEntryRepository;
 
 	@Autowired
-	public ReportingDataService(TradeEntryRepository tradeEntryRepository, @Value("${datarandom.rows}")int dataSize){
-
+	public ReportingDataService(TradeEntryRepository tradeEntryRepository, @Value("${numberofrows}") int dataSize){
 		this.tradeEntryRepository = tradeEntryRepository;
-		this.dataSize = dataSize;
-		long start = System.currentTimeMillis();
+		this.dataSize = dataSize ;
 		loadData();
-		long end = System.currentTimeMillis();
-		dataLoadingTime = "Time to INSERT (" + (dataSize+6) + ") RECORD takes: " + this.timing(start, end);
-	}
-
-	public String getDataLoadingTime() {
-		return dataLoadingTime;
 	}
 	
 	private void loadData() {
@@ -107,11 +101,15 @@ public class ReportingDataService {
 		tradeEntryRepository.save(buyer1);
 		tradeEntryRepository.save(buyer2);
 		tradeEntryRepository.save(buyer3);
+		loadData(dataSize);
+	}
 
-		trader = new Trader();
+	public List<TradeEntry> loadData(int numberOfRows) {
+		Trader trader = new Trader();
 		trader.setName("TRADER");
-		int traderFrequency = getRandomFromRange((int)dataSize/18,(int)dataSize/12);
-		for(int i = 0; i < dataSize; i++){
+		int traderFrequency =  getRandomFromRange((int)dataSize/18,(int)dataSize/12);
+		List<TradeEntry> tradeEntries = new ArrayList<>();
+		for(int i = 0; i < numberOfRows; i++){
 			TradeEntry traderEntry = new TradeEntry();
 
 			if(i%traderFrequency == 0){
@@ -140,8 +138,12 @@ public class ReportingDataService {
 			traderEntry.setUnits(getRandomFromRange(10, 15000));
 			traderEntry.setUnitPrice(getRandomFromRange(30d, 15000d));
 			tradeEntryRepository.save(traderEntry);
+			tradeEntries.add(traderEntry);
 		}
+		return tradeEntries;
 	}
+	
+	
 
 	private String getRandomDay(){
 		String date = "";

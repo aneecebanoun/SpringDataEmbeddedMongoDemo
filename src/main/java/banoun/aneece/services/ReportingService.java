@@ -44,7 +44,8 @@ public class ReportingService {
 		StringBuffer result = new StringBuffer();
 		List<TradeEntry> traderEntries = getAllTraderEntriesOrderedByCriteria(header, reportingConsoleViewService.getToggleHeaderFlage(header));
 		this.toggleHeaderFlage(header);
-		result.append(reportingConsoleViewService.printReport(traderEntries, "All Buy/Sell Traders (Outgoing/Incoming)", map));
+		String qSize = reportingConsoleViewService.stringForKey(map, "(*"+traderEntries.size()+""+"*)", "th");
+		result.append(reportingConsoleViewService.printReport(traderEntries, "All Buy/Sell Traders (Outgoing/Incoming) Total Query Size: "+ qSize, map));
 		return result.toString();
 	}
 	
@@ -52,7 +53,7 @@ public class ReportingService {
 		Map<String, String> map = new HashMap<>();
 		List<TradeEntry> trades = type.equals("tid")?  
 			Arrays.asList(tradeEntryRepository.findAllById(Arrays.asList(key)).iterator().next()):
-			tradeEntryRepository.findByTraderOrderByAmountDesc(traderRepository.findByName(key)).parallel().collect(Collectors.toList());
+			tradeEntryRepository.findByTraderInOrderByAmountDesc(traderRepository.findAllByName(key)).parallel().collect(Collectors.toList());
 		String traderId = reportingConsoleViewService.stringForKey(map, "("+trades.get(0).getTrader().getId()+")", "th");
 		String traderName = reportingConsoleViewService.stringForKey(map, "("+trades.get(0).getTrader().getName()+")", "th");
 		String rsSize = reportingConsoleViewService.stringForKey(map, "(*"+trades.size()+""+"*)", "th");
