@@ -67,7 +67,7 @@ public class MainFilter implements Filter{
 	}
 	
 	private String getFormattedDateTime(){
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE dd-MMMM-yyyy (HH:mm)");
 		return LocalDateTime.now().format(formatter);
 	}
 

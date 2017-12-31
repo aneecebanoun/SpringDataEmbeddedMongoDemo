@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import banoun.aneece.model.TradeEntry;
 import banoun.aneece.model.Trader;
 import banoun.aneece.repositories.TradeEntryRepository;
+import banoun.aneece.repositories.TraderRepository;
 import banoun.aneece.services.ReportingDataService;
 
 @Controller
@@ -22,6 +23,8 @@ public class PerformanceController {
 	ReportingDataService reportingDataService;
 	@Autowired
 	TradeEntryRepository tradeEntryRepository;
+	@Autowired
+	TraderRepository tradeRRepository;
 	
 	@RequestMapping("/dbPerformance")
 	public String dbPerformance(Model model){
@@ -37,6 +40,7 @@ public class PerformanceController {
 		String queryTime = "Time to QUERY (" +qtradeEntryList.size()+") RECORD takes: "+reportingDataService.timing(start, end);
 		start = System.currentTimeMillis();
 		tradeEntryRepository.deleteAll(tradeEntryList);
+		tradeRRepository.deleteAll(traders);
 		end = System.currentTimeMillis();
 		String deleteTime = "Time to DELETE (" +tradeEntryList.size()+") RECORD takes: "+reportingDataService.timing(start, end);
 		model.addAttribute("insertionTime", insertionTime);
