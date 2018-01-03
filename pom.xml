@@ -6,11 +6,10 @@
 	<groupId>banoun.aneece</groupId>
 	<artifactId>SpringDataMongoDemo</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 
 	<name>SpringDataMongoDemo</name>
 	<description>Spring Data Mongo Demo</description>
-
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -26,6 +25,15 @@
 	</properties>
 
 	<dependencies>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-activemq</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>activemq-broker</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>de.flapdoodle.embed</groupId>
@@ -55,13 +63,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
 		</dependency>
-
-		<dependency>
-			<groupId>org.webjars</groupId>
-			<artifactId>jquery</artifactId>
-			<version>3.1.1</version>
-		</dependency>
-
 	</dependencies>
 
 	<build>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>MongoDB Over Broker Test</title>
+<script th:src="@{/js/jquery-3.2.1.min.js}"></script>
+<script th:src="@{/js/mongodbOverJmsTest.js}"></script>
+<link type="text/css" th:href="@{/css/styles.css}" rel="stylesheet" media="screen" />
+</head>
+<body style="background-color: black; color: green">
+<div id="loaderId" class="loader"></div>
+<pre style="overflow: auto; height: 600px; width: 1400px">
+<h2><label id="insertionTime" style="background-color: black; color: green"></label></h2>
+<h2><label id="queryTime" style="background-color: black; color: green"></label></h2>
+<h2><label id="deleteTime" style="background-color: black; color: green"></label></h2>
+<h4><pre><label id="systemInfo"></label></pre></h4>
+</pre>
+<input id="brokerId" type="hidden" th:value="${brokerId}" />
+<input id="mongodbOverJmsURL" type="hidden" th:value="@{/mongodbOverJmsAjax}" />
+</body>
+</html>

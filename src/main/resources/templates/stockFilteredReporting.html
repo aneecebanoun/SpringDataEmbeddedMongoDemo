@@ -2,9 +2,8 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
 <title>Stock Filtered Reporting</title>
-
-<script src="/webjars/jquery/3.1.1/jquery.min.js"></script>
-<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> -->
+<script th:src="@{/js/jquery-3.2.1.min.js}"></script>
+<script th:src="@{/js/stockFilteredReporting.js}"></script>
 </head>
 <body style="background-color: black; color: green">
 		<h3>
@@ -13,14 +12,5 @@
 		</h3>
     <form id="stockReporting" th:action="@{/stockReporting}" method="POST">
 	</form>
-	<script>
-		$(document).ready(function() {
-			$("label").click(function(event) {
-				if ($(this).attr("name") != "header") {
-					$('#stockReporting').submit();
-				}
-			});
-		});
-	</script>
 </body>
 </html>

@@ -2,7 +2,6 @@ package banoun.aneece.services;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -24,10 +23,16 @@ public class ReportingConsoleViewService {
 	private String[] tableHeaders = Stream.of(HEADERS.values()).map(e -> e.toString()).toArray(String[]::new); 
 
 	public Boolean getToggleHeaderFlage(String header){
+		if(Arrays.asList(tableHeaders).indexOf(header.trim()) < 0){
+			header = "Amount";
+		}
 		return toggleFlags[Arrays.asList(tableHeaders).indexOf(header)];
 	}
 	
 	public void toggleHeaderFlage(String header){
+		if(Arrays.asList(tableHeaders).indexOf(header.trim()) < 0){
+			header = "Amount";
+		}
 		toggleFlags[Arrays.asList(tableHeaders).indexOf(header.trim())] = !toggleFlags[Arrays.asList(tableHeaders).indexOf(header.trim())];
 	}
 	
@@ -118,14 +123,17 @@ public class ReportingConsoleViewService {
 	}
 
     private String randomSequenceForText(String inText){
-    	int numberOfCharacters = inText.length();
-        StringBuffer word = new StringBuffer();
+        return getRandomSequence(inText.length());
+    }
+
+	public static String getRandomSequence(int numberOfCharacters) {
+		StringBuffer word = new StringBuffer();
         for(int i = 0; i < numberOfCharacters; i++){
             int randomIndex = (int)(Math.random() * characters.length) ;
             word.append(characters[randomIndex].toString());
         }
-        return word.toString();
-    }
+		return word.toString();
+	}
 	
 	public String stringForKey(Map<String, String> map, String inText, String formatFlag){
 		String key = randomSequenceForText(inText);
@@ -140,7 +148,7 @@ public class ReportingConsoleViewService {
 		return key;
 	}
 	
-	private static String addHtmlTag(String text, String tagNameAndAttribute){
+	private String addHtmlTag(String text, String tagNameAndAttribute){
 		return String.format("<%s>%s</%s>", tagNameAndAttribute, text, tagNameAndAttribute.split(" ")[0]);
 	}
     
