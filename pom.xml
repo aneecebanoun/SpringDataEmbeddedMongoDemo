@@ -6,7 +6,7 @@
 	<groupId>banoun.aneece</groupId>
 	<artifactId>SpringDataMongoDemo</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 
 	<name>SpringDataMongoDemo</name>
 	<description>Spring Data Mongo Demo</description>
@@ -34,11 +34,10 @@
 			<groupId>org.apache.activemq</groupId>
 			<artifactId>activemq-broker</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>de.flapdoodle.embed</groupId>
 			<artifactId>de.flapdoodle.embed.mongo</artifactId>
-			<version>1.50.5</version>
+			<!-- <version>1.50.5</version> -->
 		</dependency>
 		<dependency>
 			<groupId>cz.jirutka.spring</groupId>
