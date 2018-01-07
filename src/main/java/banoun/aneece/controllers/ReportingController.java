@@ -16,7 +16,6 @@ public class ReportingController {
 
 	@Autowired
 	ReportingService reportingService;
-	
 
 	@RequestMapping(value = "/stockFilteredReporting", method = RequestMethod.POST)
 	public String stockFilteredReporting(Model model, final HttpServletResponse response,
@@ -26,6 +25,14 @@ public class ReportingController {
 		return "stockFilteredReporting";
 	}
 
+	@RequestMapping(value="/toggleColourLink", method = { RequestMethod.GET, RequestMethod.POST })
+	public String toggleColourLink(Model model,final HttpServletRequest request){
+		Boolean theme = (Boolean)request.getSession().getAttribute("theme");
+		theme = !theme;
+		request.getSession().setAttribute("theme", theme);
+		return "redirect:/stockReporting";
+	}
+	
 	@RequestMapping(value={"", "/", "/stockReporting"}, method = { RequestMethod.GET, RequestMethod.POST })
 	public String stockReporting(Model model,final HttpServletRequest request, final HttpServletResponse response, 
 			@RequestParam(value="sortingOption", required = false) String sortingOption){

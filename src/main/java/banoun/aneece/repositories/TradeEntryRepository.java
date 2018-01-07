@@ -1,11 +1,14 @@
 package banoun.aneece.repositories;
 import java.util.List;
+
+
 import java.util.stream.Stream;
-import org.springframework.data.repository.CrudRepository;
+
+import org.springframework.data.mongodb.repository.MongoRepository;
 import banoun.aneece.model.TradeEntry;
 import banoun.aneece.model.Trader;
 
-public interface  TradeEntryRepository extends CrudRepository<TradeEntry, String>{
+public interface  TradeEntryRepository extends MongoRepository<TradeEntry, String>{
 	
 	Stream<TradeEntry> findAllByOrderByTraderAscAmountDesc();
 	Stream<TradeEntry> findAllByOrderByTraderDescAmountDesc();

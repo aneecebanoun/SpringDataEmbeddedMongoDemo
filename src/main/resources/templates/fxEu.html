@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script th:src="@{/js/fxEu.js}"></script>
+
+<title>FX EU Rates</title>
+</head>
+<body style="background-color: black; color: green">
+<div th:if="${not #lists.isEmpty(dailyCurrencyExchange)}" class="container">
+<h4 th:utext="${'Exchange Rates taken from <a href='+ecbLink[0]+' target='+ecbLink[1]+'>European Central Bank</a> updated on (' + dailyCurrencyExchange[0].time} +')'" style="color: lightblue"></h4>
+<br/>
+<form id="currencyExchangeForm" th:action="@{/fxRates}" method="POST">
+<div class="form-group blu-margin">
+From: <select id="fromCurrencyId" name="fromCurrency">
+    <!-- <option value="0" th:text="select currencyExchange" ></option> -->
+      <option 
+         th:each="currencyExchange : ${dailyCurrencyExchange}" 
+         th:value="${currencyExchange.currency}"
+         th:selected="${fromSelect} == ${currencyExchange.currency} ? true : false" 
+         th:text="${currencyExchange.description}">
+      </option>
+ </select>
+To: <select id="toCurrencyId" name="toCurrency">
+    <!-- <option value="0" th:text="select currencyExchange" ></option> -->
+    <option 
+         th:each="currencyExchange : ${dailyCurrencyExchange}" 
+         th:value="${currencyExchange.currency}" 
+         th:selected="${toSelect} == ${currencyExchange.currency} ? true : false"
+         th:text="${currencyExchange.description}">
+    </option>
+ </select>
+Amount: <input type="text" name="amount" id="amountId" th:value="${originalAmount}"/> 
+ <input type="submit" value="Get Rate"/> <br/><label th:text="${convertedAmount}"></label>
+ </div>
+ </form>
+ <br/>
+ <table id="currencyTable" class="table table-hover">
+  <thead>
+   <tr>
+      <th onclick="sortTable(0)" style="cursor:pointer" id="currencyClick">Currency</th>
+      <th onclick="sortTable(1)" style="cursor:pointer" id="descriptionClick">Description</th>
+      <th onclick="sortTable(2)" style="cursor:pointer" id="rateClick">Rate</th>
+   </tr>
+  </thead>
+  <tr th:each="currencyExchange : ${dailyCurrencyExchange}">
+      <td th:text="${currencyExchange.currency}"></td>
+      <td th:text="${currencyExchange.description}"></td>
+      <td th:text="${currencyExchange.rate}"></td>
+  </tr>
+ </table>
+</div>
+</body>
+</html>

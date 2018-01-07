@@ -1,7 +1,6 @@
 package banoun.aneece.jms.consumers;
 
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jms.annotation.JmsListener;
@@ -19,8 +18,8 @@ public class JmsDbPerformanceConsumerService {
 	@Qualifier("dbPerformanceBrokerStatus")
 	Map<String, Map<String, String>> dbPerformanceBrokerStatus;
 
-	@JmsListener(destination = AppConfiguration.DB_PERFORMANCE_MESSAGE_QUEUE, containerFactory = "jmsFactory")
-	public void receiveMessage(String id) {
+	@JmsListener(destination = AppConfiguration.DB_PERFORMANCE_MESSAGE_QUEUE)
+	public void receiveMessage(String id)  {
 		Map<String, String> testResult = dbPerformanceService.mongoDbTestDrive(300);
 		dbPerformanceBrokerStatus.get(id).put("insertionTime", testResult.get("insertionTime"));
 		dbPerformanceBrokerStatus.get(id).put("queryTime", testResult.get("queryTime"));
@@ -28,5 +27,5 @@ public class JmsDbPerformanceConsumerService {
 		dbPerformanceBrokerStatus.get(id).put("systemInfo", testResult.get("systemInfo"));
 		dbPerformanceBrokerStatus.get(id).put("STATUS", "DONE");
 	}
-
+	
 }

@@ -56,19 +56,19 @@ public class DbPerformanceService {
 		StringBuffer sysInfo = new StringBuffer();
 		sysInfo.append(style("ENVIRNMENT INFORMATION<br/>","blue"));
 		sysInfo.append(style("MEMORY INFORMATION<br/>","red"));
-		sysInfo.append(style("Operating System Max memory: ", "lightblue")+ style(byteToMB(maxosMaxMemory)+" (MB)", "yellow")+ "<br/>");
-		sysInfo.append(style("Max memory available to the JVM: ", "lightblue")+ style(byteToMB(Runtime.getRuntime().maxMemory())+" (MB)", "yellow")+ "<br/>");
-		sysInfo.append(style("Total amount of free memory available to the JVM: ", "lightblue")+ style(byteToMB(Runtime.getRuntime().freeMemory())+" (MB)", "yellow")+ "<br/>");
-		sysInfo.append(style("Total memory currently available to the JVM: ", "lightblue")+ style(byteToMB(Runtime.getRuntime().totalMemory())+" (MB)", "yellow")+ "<br/>");
+		sysInfo.append(style("Operating System Max memory: ", "#183e4e")+ style(byteToMB(maxosMaxMemory)+" (MB)", "blue")+ "<br/>");
+		sysInfo.append(style("Max memory available to the JVM: ", "#183e4e")+ style(byteToMB(Runtime.getRuntime().maxMemory())+" (MB)", "blue")+ "<br/>");
+		sysInfo.append(style("Total amount of free memory available to the JVM: ", "#183e4e")+ style(byteToMB(Runtime.getRuntime().freeMemory())+" (MB)", "blue")+ "<br/>");
+		sysInfo.append(style("Total memory currently available to the JVM: ", "#183e4e")+ style(byteToMB(Runtime.getRuntime().totalMemory())+" (MB)", "blue")+ "<br/>");
 		sysInfo.append(style("PROCESSORS INFORMATION<br/>","red"));
-		sysInfo.append(style("Total number of processors or cores available to the JVM: ", "lightblue")+ style(operatingSystemMXBean.getAvailableProcessors()+"", "yellow")+ "<br/>");
-		sysInfo.append(style("CPU Architecture: ", "lightblue")+ style(operatingSystemMXBean.getArch()+"", "yellow")+ "<br/>");
+		sysInfo.append(style("Total number of processors or cores available to the JVM: ", "#183e4e")+ style(operatingSystemMXBean.getAvailableProcessors()+"", "blue")+ "<br/>");
+		sysInfo.append(style("CPU Architecture: ", "#183e4e")+ style(operatingSystemMXBean.getArch()+"", "blue")+ "<br/>");
 		sysInfo.append(style("OPERATING SYSTEM INFORMATION<br/>","red"));
-		sysInfo.append(style("OS Name: ", "lightblue")+ style(operatingSystemMXBean.getName()+"", "yellow")+ "<br/>");
-		sysInfo.append(style("OS Version: ", "lightblue")+ style(operatingSystemMXBean.getVersion()+"", "yellow")+ "<br/>");
+		sysInfo.append(style("OS Name: ", "#183e4e")+ style(operatingSystemMXBean.getName()+"", "blue")+ "<br/>");
+		sysInfo.append(style("OS Version: ", "#183e4e")+ style(operatingSystemMXBean.getVersion()+"", "blue")+ "<br/>");
 		return sysInfo.toString();
-		
 	}
+	
 	private String byteToMB(long byteMemory){
 		return "" + (byteMemory/(1024*1024));
 	}
@@ -76,6 +76,5 @@ public class DbPerformanceService {
 	private String style(String text, String color){
 		return "<label style='color:" + color +"' >"+ text + "</label>";
 	}
-
 
 }

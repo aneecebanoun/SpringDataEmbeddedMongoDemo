@@ -1,5 +1,6 @@
 $( document ).ready(function() {
 	$("#dbJmsPerformanceLinkId").hide();
+	$("#footerId").hide();
 	brokerId = $("#brokerId").val();
 	mongodbOverJmsURL = $("#mongodbOverJmsURL").val(); 
 	$.post(mongodbOverJmsURL, {id: brokerId}, function(result){
@@ -9,5 +10,6 @@ $( document ).ready(function() {
         $('#deleteTime').text(result.deleteTime);
         $('#systemInfo').append(result.systemInfo);
         $("#dbJmsPerformanceLinkId").show();
+        $("#footerId").show();
     });
 });
