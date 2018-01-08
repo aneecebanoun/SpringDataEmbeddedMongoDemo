@@ -1,7 +1,7 @@
 package banoun.aneece.controllers;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,9 +18,8 @@ public class ReportingController {
 	ReportingService reportingService;
 
 	@RequestMapping(value = "/stockFilteredReporting", method = RequestMethod.POST)
-	public String stockFilteredReporting(Model model, final HttpServletResponse response,
+	public String stockFilteredReporting(Model model,
 			@RequestParam(value="searchKey", required = true) String searchKey, @RequestParam(value="searchType", required = true) String searchType){
-		response.setHeader("Cache-Control", "no-cache");
 		model.addAttribute("stockFilteredReporting", reportingService.runTradeFilteredReporting(searchKey, searchType));
 		return "stockFilteredReporting";
 	}
@@ -34,9 +33,8 @@ public class ReportingController {
 	}
 	
 	@RequestMapping(value={"", "/", "/stockReporting"}, method = { RequestMethod.GET, RequestMethod.POST })
-	public String stockReporting(Model model,final HttpServletRequest request, final HttpServletResponse response, 
+	public String stockReporting(Model model,final HttpServletRequest request, 
 			@RequestParam(value="sortingOption", required = false) String sortingOption){
-		response.setHeader("Cache-Control", "no-cache");
 		sortingOption = lastSortingOption(request, sortingOption);
 		request.getSession().setAttribute("lastSortingOption", sortingOption);
 		model.addAttribute("stockReporting", reportingService.runTradeReporting(sortingOption));

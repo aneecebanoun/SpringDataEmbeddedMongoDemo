@@ -52,7 +52,7 @@ public class ReportingConsoleViewService {
 				.substring(0, lineSeperator.length() - 3) + cornerChar + "%n"));
 		result.append(String.format(headerAlignFormat, header));
 		result.append(String.format(lineSeperator));
-		String[] encodedtableHeaders = new String[tableHeaders.length];
+		Object[] encodedtableHeaders = new String[tableHeaders.length];
 		for(int i = 0; i < tableHeaders.length; i++){
 			encodedtableHeaders[i] = stringForKey(map, tableHeaders[i], "th");
 		}

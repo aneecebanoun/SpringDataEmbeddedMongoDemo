@@ -2,8 +2,6 @@ package banoun.aneece.controllers;
 
 import java.util.Map;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -27,8 +25,7 @@ public class PerformanceController {
 
 	
 	@RequestMapping("/dbPerformance")
-	public String dbPerformance(Model model, final HttpServletResponse response){
-		response.setHeader("Cache-Control", "no-cache");
+	public String dbPerformance(Model model){
 		Map<String, String> testResult = dbPerformanceService.mongoDbTestDrive(300);
 		model.addAttribute("insertionTime", testResult.get("insertionTime"));
 		model.addAttribute("queryTime", testResult.get("queryTime"));
@@ -38,8 +35,7 @@ public class PerformanceController {
 	}
 	
 	@RequestMapping(value={"/mongodbOverJmsTest"}, method = RequestMethod.GET)
-	public String mongodbOverJmsTest(Model model, final HttpServletResponse response){
-		response.setHeader("Cache-Control", "no-cache");
+	public String mongodbOverJmsTest(Model model){
 		String brokerId = jmsDbPerformanceProducerService.getUniqueKey(dbPerformanceBrokerStatus);
 		jmsDbPerformanceProducerService.sendMessage(brokerId);
 		model.addAttribute("brokerId", brokerId);

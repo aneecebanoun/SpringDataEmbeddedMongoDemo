@@ -1,10 +1,8 @@
 package banoun.aneece.controllers;
 
 import java.util.HashMap;
+
 import java.util.Map;
-
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,8 +18,7 @@ public class RestControllerForAjax {
 	Map<String, Map<String, String>> dbPerformanceBrokerStatus;
 	
 	@PostMapping("/mongodbOverJmsAjax")
-	public Map<String, String> mongodbOverJmsAjax(MongodbOverJmsAjaxRequestBody ajaxBody, final HttpServletResponse response) {
-		response.setHeader("Cache-Control", "no-cache");
+	public Map<String, String> mongodbOverJmsAjax(MongodbOverJmsAjaxRequestBody ajaxBody) {
 		Map<String, String> result = new HashMap<>();
 		final String ID = ajaxBody.getId();
 		while(dbPerformanceBrokerStatus.get(ID) == null || dbPerformanceBrokerStatus.get(ID).get("STATUS").equals("SENDING")){
