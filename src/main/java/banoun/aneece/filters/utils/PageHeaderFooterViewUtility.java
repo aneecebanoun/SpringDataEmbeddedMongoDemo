@@ -114,7 +114,7 @@ public class PageHeaderFooterViewUtility {
 		}
 		String font = getFont();
 		String link = "<a id='%s' href='%s'style='color: %s; %s' %s>%s</a>";
-		return String.format(link, "fxLinkId", url, colour, font, target, displayText);
+		return String.format(link, id, url, colour, font, target, displayText);
 	}
 
 	private String getTagStarting(String page, String tagName) {

@@ -21,9 +21,9 @@ public class FxController {
 	
 	@Autowired
 	CurrencyExchangeService currencyExchangeService;
-	
+	//test circlci
 	@RequestMapping(value = "/fxRates", method = { RequestMethod.GET, RequestMethod.POST })
-	private String fxRates(Model model,
+	public String fxRates(Model model,
 			@RequestParam(value="fromCurrency", required = false) String fromCurrency,
 			@RequestParam(value="toCurrency", required = false) String toCurrency,
 			@RequestParam(value="amount", required = false) String amount) 
