@@ -7,6 +7,7 @@ import banoun.aneece.model.CurrencyExchange;
 import java.io.IOException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,8 +29,10 @@ import org.xml.sax.SAXException;
 @Service
 public class CurrencyExchangeService {
 
+	private static final int UPDATE_HOUR = 16;
 	private final Map<String, List<CurrencyExchange>> dailyCurrencyExchangeRates = new HashMap<>();
 	private final String FX_URL = "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml";
+	private String calculatedLastUpdateDate;
 	
 	private List<String> currencyDetails = Arrays.asList(
 			"USD:US dollar", "JPY:Japanese yen", "GBP:Pound sterling",
@@ -66,8 +69,16 @@ public class CurrencyExchangeService {
 			currencyExchangeRates = fxLookup();
 			dailyCurrencyExchangeRates.clear();
 		}
+		calculatedLastUpdateDate = formattedDay;
 		dailyCurrencyExchangeRates.put(formattedDay, currencyExchangeRates);
 		return currencyExchangeRates;
+	}
+	
+	public String getCalculatedLastUpdateDate() throws ParserConfigurationException, SAXException, IOException{
+		if(calculatedLastUpdateDate == null){
+			getDailyCurrencyExchange();
+		}
+		return calculatedLastUpdateDate;
 	}
 	
 	public String convert(String from, String to, String inAmount){
@@ -139,20 +150,26 @@ public class CurrencyExchangeService {
 		return null;
 	}
 
-	private Boolean isWeekEnd(LocalDate localDate) {
-		return EnumSet.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY).contains(localDate.getDayOfWeek());
+	private Boolean isWeekEnd(LocalDateTime localDate) {
+		Boolean earlyMonday = DayOfWeek.MONDAY == localDate.getDayOfWeek() && localDate.getHour() <  UPDATE_HOUR;
+		return EnumSet.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY).contains(localDate.getDayOfWeek()) || earlyMonday;
 	}
 
-	private LocalDate getLastWorkingDay(LocalDate localDate) {
-		while (isWeekEnd(localDate)) {
+	private LocalDateTime getLastUpdategDay(LocalDateTime localDate) {
+		 
+		while (isWeekEnd(localDate) || beforeUpdate(localDate)) {
 			localDate = localDate.plusDays(-1);
 		}
 		return localDate;
 	}
+	
+	private Boolean beforeUpdate(LocalDateTime localDate){
+		return LocalDateTime.now().getDayOfWeek() == localDate.getDayOfWeek() && localDate.getHour() <  UPDATE_HOUR;
+	}
 
 	private String getFormattedDay() {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_PATTERN);
-		LocalDate day = getLastWorkingDay(LocalDate.now());
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(new StringBuilder(DATE_PATTERN).reverse().toString());
+		LocalDateTime day = getLastUpdategDay(LocalDateTime.now());
 		return day.format(formatter);
 	}
 

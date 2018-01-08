@@ -47,6 +47,7 @@ public class FxController {
 		model.addAttribute("originalAmount", originalAmount);
 		model.addAttribute("convertedAmount", convertedAmount);
 		model.addAttribute("ecbLink", ecbLink);
+		model.addAttribute("calculatedLastUpdateDate", currencyExchangeService.getCalculatedLastUpdateDate());
 		model.addAttribute("dailyCurrencyExchange", currencyExchangeService.getDailyCurrencyExchange());
 		return "fxEu";
 	}

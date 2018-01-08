@@ -10,7 +10,7 @@
 </head>
 <body style="background-color: black; color: green">
 <div th:if="${not #lists.isEmpty(dailyCurrencyExchange)}" class="container">
-<h4 th:utext="${'Exchange Rates taken from <a href='+ecbLink[0]+' target='+ecbLink[1]+'>European Central Bank</a> updated on (' + dailyCurrencyExchange[0].time} +')'" style="color: lightblue"></h4>
+<h4 th:utext="${'Exchange Rates taken from <a href='+ecbLink[0]+' target='+ecbLink[1]+'>European Central Bank</a> updated on (' + calculatedLastUpdateDate +')'}" style="color: lightblue"></h4>
 <br/>
 <form id="currencyExchangeForm" th:action="@{/fxRates}" method="POST">
 <div class="form-group blu-margin">
