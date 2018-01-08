@@ -1,4 +1,5 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/49deee0e144a4c94a0dd723fbf64767e)](https://www.codacy.com/app/java2ee5/SpringDataEmbeddedMongoDemo?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=aneecebanoun/SpringDataEmbeddedMongoDemo&amp;utm_campaign=Badge_Grade)
+
 To see what the code is doing please follow the link to my AWS free tier on:
 http://13.58.229.159:8080/mongoReporting/
 
