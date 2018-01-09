@@ -27,7 +27,7 @@ public class ReportingController {
 	@RequestMapping(value="/toggleColourLink", method = { RequestMethod.GET, RequestMethod.POST })
 	public String toggleColourLink(Model model,final HttpServletRequest request){
 		Boolean theme = (Boolean)request.getSession().getAttribute("theme");
-		theme = !theme;
+		theme = theme != null ? !theme : true;
 		request.getSession().setAttribute("theme", theme);
 		return "redirect:/stockReporting";
 	}
