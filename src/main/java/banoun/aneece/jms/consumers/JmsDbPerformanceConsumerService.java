@@ -12,11 +12,11 @@ import banoun.aneece.services.DbPerformanceService;
 public class JmsDbPerformanceConsumerService {
 
 	@Autowired
-	DbPerformanceService dbPerformanceService;
+	private DbPerformanceService dbPerformanceService;
 
 	@Autowired
 	@Qualifier("dbPerformanceBrokerStatus")
-	Map<String, Map<String, String>> dbPerformanceBrokerStatus;
+	private Map<String, Map<String, String>> dbPerformanceBrokerStatus;
 
 	@JmsListener(destination = AppConfiguration.DB_PERFORMANCE_MESSAGE_QUEUE)
 	public void receiveMessage(String id)  {

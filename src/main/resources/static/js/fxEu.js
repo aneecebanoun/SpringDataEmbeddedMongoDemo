@@ -41,7 +41,7 @@ function sortTable(n) {
 			switching = true;
 			switchcount++;
 		} else {
-			if (switchcount == 0 && dir == "asc") {
+			if (switchcount === 0 && dir === "asc") {
 				dir = "desc";
 				switching = true;
 			}

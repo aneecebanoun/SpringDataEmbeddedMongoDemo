@@ -15,7 +15,7 @@ import banoun.aneece.filters.utils.PageHeaderFooterViewUtility;
 @WebFilter(filterName = "viewFilter", urlPatterns = "/*", asyncSupported = true)
 public class ViewFilter implements Filter {
 
-	PageHeaderFooterViewUtility  pageHeaderFooterViewService = new PageHeaderFooterViewUtility();;
+	private PageHeaderFooterViewUtility  pageHeaderFooterViewService = new PageHeaderFooterViewUtility();
 	
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)

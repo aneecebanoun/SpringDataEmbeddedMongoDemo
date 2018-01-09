@@ -33,7 +33,7 @@ public class PageHeaderFooterViewUtility {
 		if (theme) {
 			colours.put("page", page);
 			colours.keySet().forEach(key -> {
-				if (!key.equals("page")) {
+				if (!"page".equals(key)) {
 					colours.put("page", colours.get("page").replace(key, colours.get(key)));
 				}
 			});
@@ -43,7 +43,8 @@ public class PageHeaderFooterViewUtility {
 		}
 	}
 
-	private String addPageFooter(String page, Map<String, String> colours) {
+	private String addPageFooter(String pageIn, Map<String, String> colours) {
+		String page = pageIn;
 		String pageFooter = getPageFooter();
 		String bodyClosingTag = "</body>";
 		if (!page.contains(pageFooter)) {
@@ -53,13 +54,14 @@ public class PageHeaderFooterViewUtility {
 		return page;
 	}
 
-	private String addPageHeader(String page, HttpServletRequest httpRequest, byte[] bytes,
+	private String addPageHeader(String pageIn, HttpServletRequest httpRequest, byte[] bytes,
 			Map<String, String> colours) {
+		String page = pageIn;
 		String pageHeader = getPageHeader(httpRequest, bytes);
 		String bodyTag = getTagStarting(page, "body");
 		colours.put("pageHeader", pageHeader);
 		colours.keySet().forEach(key -> {
-			if (!key.equals("pageHeader")) {
+			if (!"pageHeader".equals(key)) {
 				colours.put("pageHeader", colours.get("pageHeader").replace(key, colours.get(key)));
 			}
 		});

@@ -18,6 +18,8 @@ import banoun.aneece.model.TradeEntry;
 @Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class ReportingConsoleViewService {
 
+    private static Character[] characters;
+    
 	@Autowired
 	private ReportingDataService reportingDataService;
 
@@ -140,7 +142,7 @@ public class ReportingConsoleViewService {
 	
 	public String stringForKey(Map<String, String> map, String inText, String formatFlag){
 		String key = randomSequenceForText(inText);
-		String htmlFormattedText = formatFlag.equals("th")? addHtmlTag(inText, "label name='header' style='color:white'") : tagRowField(inText, formatFlag);
+		String htmlFormattedText = "th".equals(formatFlag)? addHtmlTag(inText, "label name='header' style='color:white'") : tagRowField(inText, formatFlag);
 		if(map.containsValue(htmlFormattedText)){
 			return map.keySet().stream().filter(k -> map.get(k).equals(htmlFormattedText) ).collect(Collectors.toList()).get(0);
 		}
@@ -154,8 +156,6 @@ public class ReportingConsoleViewService {
 	private String addHtmlTag(String text, String tagNameAndAttribute){
 		return String.format("<%s>%s</%s>", tagNameAndAttribute, text, tagNameAndAttribute.split(" ")[0]);
 	}
-    
-    static Character[] characters;
     
     static{
     	List<Character> charactersList = new ArrayList<>();

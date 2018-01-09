@@ -120,7 +120,8 @@ public class TradeEntry{
 		}
 	}
 
-	private LocalDate getAdjustedSettlementDate(LocalDate localDate) {
+	private LocalDate getAdjustedSettlementDate(LocalDate localDateIn) {
+		LocalDate localDate = LocalDate.ofEpochDay(localDateIn.toEpochDay());
 		while (isWeekEnd(localDate)) {
 			localDate = localDate.plusDays(1);
 		}

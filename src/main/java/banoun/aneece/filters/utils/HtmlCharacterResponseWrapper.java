@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponseWrapper;
 public class HtmlCharacterResponseWrapper extends HttpServletResponseWrapper {
 
 	private static class ByteArrayServletStream extends ServletOutputStream {
-		ByteArrayOutputStream baos;
+		private ByteArrayOutputStream baos;
 		ByteArrayServletStream(ByteArrayOutputStream baos) {
 			this.baos = baos;
 		}

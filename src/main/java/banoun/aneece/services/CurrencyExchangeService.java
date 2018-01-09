@@ -45,14 +45,6 @@ public class CurrencyExchangeService {
 
 	private final String DATE_PATTERN = "yyyy-MM-dd";
 
-	public CurrencyExchangeService(){
-		try {
-			getDailyCurrencyExchange();
-		} catch (ParserConfigurationException | SAXException | IOException e) {
-			//L0gEe
-		}
-	}
-	
 	public Boolean validAmount(String amount){
 		try{
 			Double.valueOf(amount);
@@ -69,15 +61,13 @@ public class CurrencyExchangeService {
 			currencyExchangeRates = fxLookup();
 			dailyCurrencyExchangeRates.clear();
 		}
-		calculatedLastUpdateDate = formattedDay;
 		dailyCurrencyExchangeRates.put(formattedDay, currencyExchangeRates);
+		calculatedLastUpdateDate = formattedDay;
 		return currencyExchangeRates;
 	}
 	
 	public String getCalculatedLastUpdateDate() throws ParserConfigurationException, SAXException, IOException{
-		if(calculatedLastUpdateDate == null){
-			getDailyCurrencyExchange();
-		}
+		getDailyCurrencyExchange();
 		return calculatedLastUpdateDate;
 	}
 	
@@ -151,22 +141,20 @@ public class CurrencyExchangeService {
 	}
 
 	private Boolean isWeekEnd(LocalDateTime localDate) {
-		Boolean earlyMonday = DayOfWeek.MONDAY == localDate.getDayOfWeek() && localDate.getHour() <  UPDATE_HOUR;
-		return EnumSet.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY).contains(localDate.getDayOfWeek()) || earlyMonday;
+		return EnumSet.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY).contains(localDate.getDayOfWeek());
 	}
 
-	private LocalDateTime getLastUpdategDay(LocalDateTime localDate) {
-		 
-		while (isWeekEnd(localDate) || beforeUpdate(localDate)) {
+	private LocalDateTime getLastUpdategDay(LocalDateTime localDateIn) {
+		LocalDateTime localDate = localDateIn.plusNanos(0);
+		if(localDate.getHour() <  UPDATE_HOUR){
+			localDate = localDate.plusDays(-1);
+		}
+		while (isWeekEnd(localDate)) {
 			localDate = localDate.plusDays(-1);
 		}
 		return localDate;
 	}
 	
-	private Boolean beforeUpdate(LocalDateTime localDate){
-		return LocalDateTime.now().getDayOfWeek() == localDate.getDayOfWeek() && localDate.getHour() <  UPDATE_HOUR;
-	}
-
 	private String getFormattedDay() {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(new StringBuilder(DATE_PATTERN).reverse().toString());
 		LocalDateTime day = getLastUpdategDay(LocalDateTime.now());

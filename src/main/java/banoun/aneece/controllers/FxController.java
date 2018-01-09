@@ -1,6 +1,7 @@
 package banoun.aneece.controllers;
 
 import java.io.IOException;
+
 import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +10,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.client.RestTemplate;
 import org.xml.sax.SAXException;
 import banoun.aneece.services.CurrencyExchangeService;
 
@@ -17,11 +17,8 @@ import banoun.aneece.services.CurrencyExchangeService;
 public class FxController {
 	
 	@Autowired
-	RestTemplate restTemplate;
-	
-	@Autowired
-	CurrencyExchangeService currencyExchangeService;
-	//test circlci
+	private CurrencyExchangeService currencyExchangeService;
+
 	@RequestMapping(value = "/fxRates", method = { RequestMethod.GET, RequestMethod.POST })
 	public String fxRates(Model model,
 			@RequestParam(value="fromCurrency", required = false) String fromCurrency,
@@ -47,8 +44,8 @@ public class FxController {
 		model.addAttribute("originalAmount", originalAmount);
 		model.addAttribute("convertedAmount", convertedAmount);
 		model.addAttribute("ecbLink", ecbLink);
-		model.addAttribute("calculatedLastUpdateDate", currencyExchangeService.getCalculatedLastUpdateDate());
 		model.addAttribute("dailyCurrencyExchange", currencyExchangeService.getDailyCurrencyExchange());
+		model.addAttribute("calculatedLastUpdateDate", currencyExchangeService.getCalculatedLastUpdateDate());
 		return "fxEu";
 	}
 }

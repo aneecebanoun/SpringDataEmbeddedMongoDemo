@@ -17,11 +17,11 @@ import banoun.aneece.services.ReportingConsoleViewService.HEADERS;
 public class ReportingService {
 	
 	@Autowired
-	TradeEntryRepository tradeEntryRepository;
+	private TradeEntryRepository tradeEntryRepository;
 	@Autowired
-	TraderRepository traderRepository;
+	private TraderRepository traderRepository;
 	@Autowired
-	ReportingConsoleViewService reportingConsoleViewService;
+	private ReportingConsoleViewService reportingConsoleViewService;
 	
 	public String runTradeReporting(String sortingOption){
 		StringBuffer result = new StringBuffer();
@@ -51,7 +51,7 @@ public class ReportingService {
 	
 	private String printFilteredReport(String key, String type) {
 		Map<String, String> map = new HashMap<>();
-		List<TradeEntry> trades = type.equals("tid")?  
+		List<TradeEntry> trades = "tid".equals(type)?  
 			Arrays.asList(tradeEntryRepository.findAllById(Arrays.asList(key)).iterator().next()):
 			tradeEntryRepository.findByTraderInOrderByAmountDesc(traderRepository.findAllByName(key)).parallel().collect(Collectors.toList());
 		String traderId = reportingConsoleViewService.stringForKey(map, "("+trades.get(0).getTrader().getId()+")", "th");

@@ -20,7 +20,7 @@ public class ReportingDataService {
 	private final String DATE_PATTERN = "dd MMM yyyy";
 	private  String[] months;
 
-	TradeEntryRepository tradeEntryRepository;
+	private TradeEntryRepository tradeEntryRepository;
 
 	@Autowired
 	public ReportingDataService(TradeEntryRepository tradeEntryRepository, @Value("${numberofrows}") int dataSize){
