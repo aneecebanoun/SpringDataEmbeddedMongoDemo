@@ -7,6 +7,17 @@ public class CurrencyExchange {
 	private String rate;
 	private String description;
 
+	public CurrencyExchange(){
+		super();
+	}
+	public CurrencyExchange(String time, String currency, String rate, String description) {
+		super();
+		this.time = time;
+		this.currency = currency;
+		this.rate = rate;
+		this.description = description;
+	}
+
 	public String getDescription() {
 		return description;
 	}

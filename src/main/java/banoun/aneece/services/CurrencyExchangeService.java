@@ -29,7 +29,8 @@ import org.xml.sax.SAXException;
 @Service
 public class CurrencyExchangeService {
 
-	private static final int UPDATE_HOUR = 16;
+	private final Integer[] FROM_UPDATE_TIME = {14, 15};
+	private final Integer[] TO_UPDATE_TIME = {16, 10};
 	private final Map<String, List<CurrencyExchange>> dailyCurrencyExchangeRates = new HashMap<>();
 	private final String FX_URL = "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml";
 	private String calculatedLastUpdateDate;
@@ -44,6 +45,9 @@ public class CurrencyExchangeService {
 			.map(currencyDetail -> currencyDetail.split(":")[0].trim()).collect(Collectors.toList());
 
 	private final String DATE_PATTERN = "yyyy-MM-dd";
+	final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern(DATE_PATTERN);
+	final DateTimeFormatter FORMATTER_ = DateTimeFormatter.ofPattern(new StringBuilder(DATE_PATTERN).reverse().toString());
+
 
 	public Boolean validAmount(String amount){
 		try{
@@ -57,7 +61,7 @@ public class CurrencyExchangeService {
 			throws ParserConfigurationException, SAXException, IOException {
 		String formattedDay = getFormattedDay();
 		List<CurrencyExchange> currencyExchangeRates = dailyCurrencyExchangeRates.get(formattedDay);
-		if (currencyExchangeRates == null) {
+		if (withinUpdateTime() || currencyExchangeRates == null) {
 			currencyExchangeRates = fxLookup();
 			dailyCurrencyExchangeRates.clear();
 		}
@@ -105,31 +109,25 @@ public class CurrencyExchangeService {
 	private List<CurrencyExchange> getCurrencyExchanges(NodeList nodeList, String time) {
 		time = displayDate(time);
 		List<CurrencyExchange> currencyExchanges = new ArrayList<>();
-		CurrencyExchange currencyExchange = new CurrencyExchange();
-		currencyExchange.setCurrency("EUR");
-		currencyExchange.setDescription("Euro");
-		currencyExchange.setRate("1.0000");
-		currencyExchange.setTime(time);
-		currencyExchanges.add(currencyExchange);
+		currencyExchanges.add(new CurrencyExchange(time, "EUR", "1.0000", "Euro"));
 		for (int i = 0; i < nodeList.getLength(); i++) {
 			Node node = nodeList.item(i);
 			String currency = node.getAttributes().getNamedItem("currency") != null
 					? node.getAttributes().getNamedItem("currency").getNodeValue().trim() : "";
 			if (node.getNodeType() == Node.ELEMENT_NODE && currencies.contains(currency)) {
-				currencyExchange = new CurrencyExchange();
-				currencyExchange.setCurrency(currency);
-				String description = currencyDetails.get(currencies.indexOf(currency)).split(":")[1];
-				currencyExchange.setDescription(description);
-				String rate = node.getAttributes().getNamedItem("rate").getNodeValue().trim();
-				rate = String.format("%.4f", Double.valueOf(rate));
-				currencyExchange.setRate(rate);
-				currencyExchange.setTime(time);
-				currencyExchanges.add(currencyExchange);
+				currencyExchanges.add(getCurrencyExchangeFromNode(node, currency, time));
 			}
 		}
 		return currencyExchanges;
 	}
-
+	
+	private CurrencyExchange getCurrencyExchangeFromNode(Node node, String currency, String time){
+		String description = currencyDetails.get(currencies.indexOf(currency)).split(":")[1];
+		String rate = node.getAttributes().getNamedItem("rate").getNodeValue().trim();
+		rate = String.format("%.4f", Double.valueOf(rate));
+		return new CurrencyExchange(time, currency, rate, description); 
+	}
+	
 	private String getTime(NodeList nodeList) {
 		for (int i = 0; i < nodeList.getLength(); i++) {
 			Node node = nodeList.item(i);
@@ -146,7 +144,7 @@ public class CurrencyExchangeService {
 
 	private LocalDateTime getLastUpdategDay(LocalDateTime localDateIn) {
 		LocalDateTime localDate = localDateIn.plusNanos(0);
-		if(localDate.getHour() <  UPDATE_HOUR){
+		if(beforeUpdateTime()){
 			localDate = localDate.plusDays(-1);
 		}
 		while (isWeekEnd(localDate)) {
@@ -155,16 +153,33 @@ public class CurrencyExchangeService {
 		return localDate;
 	}
 	
+	private Boolean withinUpdateTime(){
+		LocalDateTime from = fromToUpdateTimes()[0];
+		LocalDateTime to = fromToUpdateTimes()[1];
+		LocalDateTime now =LocalDateTime.now();
+		Boolean timeForUpdate = now.isAfter(from) && now.isBefore(to);
+		Boolean noUpdateYet = dailyCurrencyExchangeRates.get(now.format(FORMATTER_)) == null;
+		return !isWeekEnd(now) && noUpdateYet && timeForUpdate;
+	}
+	
+	private Boolean beforeUpdateTime(){
+		LocalDateTime from = fromToUpdateTimes()[0];
+		return LocalDateTime.now().isBefore(from);
+	}
+	
+	LocalDateTime[] fromToUpdateTimes(){
+		LocalDateTime from = LocalDate.now().atTime(FROM_UPDATE_TIME[0], FROM_UPDATE_TIME[1]);
+		LocalDateTime to = LocalDate.now().atTime(TO_UPDATE_TIME[0], TO_UPDATE_TIME[1]);
+		return new LocalDateTime[]{from, to};
+	}
+	
 	private String getFormattedDay() {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(new StringBuilder(DATE_PATTERN).reverse().toString());
 		LocalDateTime day = getLastUpdategDay(LocalDateTime.now());
-		return day.format(formatter);
+		return day.format(FORMATTER_);
 	}
 
 	private String displayDate(String inDate) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_PATTERN);
-		DateTimeFormatter formatter_ = DateTimeFormatter.ofPattern(new StringBuilder(DATE_PATTERN).reverse().toString());
-		return LocalDate.parse(inDate, formatter).format(formatter_);
+		return LocalDate.parse(inDate, FORMATTER).format(FORMATTER_);
 	}
 
 }

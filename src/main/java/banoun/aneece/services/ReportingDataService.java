@@ -31,70 +31,20 @@ public class ReportingDataService {
 	
 	private void loadData() {
 		months = new String[]{"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
-
 		Trader trader = new Trader();
 		trader.setName("Trader*");
-		
-		TradeEntry buyer1 = new TradeEntry();
-		buyer1.setBuySellFlag('B');
-		buyer1.setAgreedFx(0.50);
-		buyer1.setCurrency("AED");
-		buyer1.setInstructionDate(getLocalDateFromString("02 Jan 2016"));
-		buyer1.setSettlementDate(getLocalDateFromString("02 Jan 2016"));
-		buyer1.setUnits(200);
-		buyer1.setUnitPrice(100.25);
-		buyer1.setTrader(trader);
-
-		TradeEntry buyer2 = new TradeEntry();
-		buyer2.setBuySellFlag('B');
-		buyer2.setAgreedFx(0.50);
-		buyer2.setCurrency("SAR");
-		buyer2.setInstructionDate(getLocalDateFromString("01 Jan 2016"));
-		buyer2.setSettlementDate(getLocalDateFromString("01 Jan 2016"));
-		buyer2.setUnits(500);
-		buyer2.setUnitPrice(300.25);
-		buyer2.setTrader(trader);
-		
-		TradeEntry buyer3 = new TradeEntry();
-		buyer3.setBuySellFlag('B');
-		buyer3.setAgreedFx(0.50);
-		buyer3.setCurrency("SAR");
-		buyer3.setInstructionDate(getLocalDateFromString("28 Feb 2015"));
-		buyer3.setSettlementDate(getLocalDateFromString("28 Feb 2015"));
-		buyer3.setUnits(1500);
-		buyer3.setUnitPrice(131d);
-		buyer3.setTrader(trader);
-
-		TradeEntry seller1 = new TradeEntry();
-		seller1.setBuySellFlag('S');
-		seller1.setAgreedFx(0.22);
-		seller1.setCurrency("ANY");
-		seller1.setInstructionDate(getLocalDateFromString("08 Jan 2016"));
-		seller1.setSettlementDate(getLocalDateFromString("08 Jan 2016"));
-		seller1.setUnits(450);
-		seller1.setUnitPrice(150.5);
-		seller1.setTrader(trader);
-
-		TradeEntry seller2 = new TradeEntry();
-		seller2.setBuySellFlag('S');
-		seller2.setAgreedFx(0.22);
-		seller2.setCurrency("ANY");
-		seller2.setInstructionDate(getLocalDateFromString("05 Jan 2016"));
-		seller2.setSettlementDate(getLocalDateFromString("05 Jan 2016"));
-		seller2.setUnits(550);
-		seller2.setUnitPrice(170.5);
-		seller2.setTrader(trader);
-
-		TradeEntry seller3 = new TradeEntry();
-		seller3.setBuySellFlag('S');
-		seller3.setAgreedFx(0.22);
-		seller3.setCurrency("ANY");
-		seller3.setInstructionDate(getLocalDateFromString("28 Feb 2015"));
-		seller3.setSettlementDate(getLocalDateFromString("28 Feb 2015"));
-		seller3.setUnits(750);
-		seller3.setUnitPrice(599.5);
-		seller3.setTrader(trader);
-
+		TradeEntry buyer1 = new TradeEntry(trader, "AED", 100.25, 200, 0.50, 'B', 
+				getLocalDateFromString("02 Jan 2016"), getLocalDateFromString("02 Jan 2016"));
+		TradeEntry buyer2 = new TradeEntry(trader, "SAR", 300.25, 500, 0.50, 'B', 
+						getLocalDateFromString("01 Jan 2016"), getLocalDateFromString("01 Jan 2016"));
+		TradeEntry buyer3 = new TradeEntry(trader, "SAR", 131d, 1500, 0.50, 'B', 
+				getLocalDateFromString("28 Feb 2015"), getLocalDateFromString("28 Feb 2015"));
+		TradeEntry seller1 = new TradeEntry(trader, "ANY", 150.5, 450, 0.22, 'S', 
+				getLocalDateFromString("08 Jan 2016"), getLocalDateFromString("08 Jan 2016"));
+		TradeEntry seller2 = new TradeEntry(trader, "ANY", 170.5, 550, 0.22, 'S', 
+				getLocalDateFromString("05 Jan 2016"), getLocalDateFromString("05 Jan 2016"));
+		TradeEntry seller3 = new TradeEntry(trader, "ANY", 599.5, 750, 0.22, 'S', 
+				getLocalDateFromString("28 Feb 2015"), getLocalDateFromString("28 Feb 2015"));
 		tradeEntryRepository.save(seller1);
 		tradeEntryRepository.save(seller2);
 		tradeEntryRepository.save(seller3);
@@ -104,6 +54,7 @@ public class ReportingDataService {
 		loadData(dataSize);
 	}
 
+	
 	public List<TradeEntry> loadData(int numberOfRows) {
 		Trader trader = new Trader();
 		trader.setName("TRADER");

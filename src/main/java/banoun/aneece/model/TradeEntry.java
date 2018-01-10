@@ -23,6 +23,23 @@ public class TradeEntry{
 	private LocalDate settlementDate;
 	private LocalDate instructionDate;
 
+	public TradeEntry(){
+		super();		
+	}
+	
+	public TradeEntry(Trader trader, String currency, Double unitPrice, Integer units, Double agreedFx,
+			Character buySellFlag, LocalDate settlementDate, LocalDate instructionDate) {
+		super();
+		this.trader = trader;
+		this.currency = currency;
+		this.unitPrice = unitPrice;
+		this.units = units;
+		this.agreedFx = agreedFx;
+		this.buySellFlag = buySellFlag;
+		setSettlementDate(settlementDate);
+		setInstructionDate(instructionDate);
+	}
+
 	public LocalDate getSettlementDate() {
 		return settlementDate;
 	}
