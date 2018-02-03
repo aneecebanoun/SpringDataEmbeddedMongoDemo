@@ -8,10 +8,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.jms.ConnectionFactory;
 import javax.servlet.Filter;
+import javax.servlet.Servlet;
 
 import org.apache.activemq.command.ActiveMQTopic;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jms.DefaultJmsListenerContainerFactoryConfigurer;
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -27,6 +29,7 @@ import org.springframework.web.client.RestTemplate;
 import com.mongodb.MongoClient;
 import banoun.aneece.filters.ViewFilter;
 import banoun.aneece.model.TradeEntryListener;
+import banoun.aneece.servlets.ChartViewServlet;
 import cz.jirutka.spring.embedmongo.EmbeddedMongoFactoryBean;
 
 @Configuration
@@ -107,6 +110,16 @@ public class AppConfiguration extends AbstractMongoConfiguration {
 		restClient.setInterceptors(
 				Collections.singletonList((request, body, execution) -> execution.execute(request, body)));
 		return restClient;
+	}
+	
+	@Bean
+	public ChartViewServlet chartViewServlet(){
+		return new ChartViewServlet();
+	}
+	
+	@Bean
+	public ServletRegistrationBean<Servlet> servletRegistrationBean(){
+	    return new ServletRegistrationBean<>(chartViewServlet(),"/chartView");
 	}
 
 }

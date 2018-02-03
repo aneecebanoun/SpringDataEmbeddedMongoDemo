@@ -6,7 +6,7 @@
 	<groupId>banoun.aneece</groupId>
 	<artifactId>SpringDataMongoDemo</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 
 	<name>SpringDataMongoDemo</name>
 	<description>Spring Data Mongo Demo</description>
@@ -61,6 +61,11 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>jfree</groupId>
+			<artifactId>jfreechart</artifactId>
+			<version>1.0.13</version>
 		</dependency>
 	</dependencies>
 

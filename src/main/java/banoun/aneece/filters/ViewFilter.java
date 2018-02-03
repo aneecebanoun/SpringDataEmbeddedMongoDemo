@@ -9,12 +9,18 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import banoun.aneece.controllers.RestControllerForAjax;
 import banoun.aneece.filters.utils.HtmlCharacterResponseWrapper;
 import banoun.aneece.filters.utils.PageHeaderFooterViewUtility;
 
 @WebFilter(filterName = "viewFilter", urlPatterns = "/*", asyncSupported = true)
 public class ViewFilter implements Filter {
 
+	private static final Logger log = LoggerFactory.getLogger(ViewFilter.class);
 	private PageHeaderFooterViewUtility  pageHeaderFooterViewService = new PageHeaderFooterViewUtility();
 	
 	@Override
@@ -31,7 +37,9 @@ public class ViewFilter implements Filter {
 				response.getOutputStream().write(bytes);
 			}
 		} catch (Exception e) {
+			log.debug(e.toString());
 			response.getOutputStream().write(bytes);
+			
 		}
 	}
 

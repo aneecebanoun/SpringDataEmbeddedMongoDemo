@@ -3,6 +3,9 @@ package banoun.aneece.controllers;
 import java.util.HashMap;
 
 import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,9 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import banoun.aneece.commands.MongodbOverJmsAjaxRequestBody;
 
+
 @RestController
 public class RestControllerForAjax {
-	
+
+	private static final Logger log = LoggerFactory.getLogger(RestControllerForAjax.class);
 	@Autowired
 	@Qualifier("dbPerformanceBrokerStatus")
 	Map<String, Map<String, String>> dbPerformanceBrokerStatus;
@@ -37,6 +42,7 @@ public class RestControllerForAjax {
 			Thread.sleep(sleepTime);
 		} catch (InterruptedException e) {
 			// L0GeE
+			log.debug(e.toString());
 		}
 	}
 

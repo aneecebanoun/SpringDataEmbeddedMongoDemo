@@ -84,7 +84,8 @@ public class PageHeaderFooterViewUtility {
 		String homeLink = createLink("homeLinkId", "", "white", "HOME", httpRequest);
 		String performanceLink = createLink("performanceLinkId", "dbPerformance", "yellow", "Performance Test",
 				httpRequest);
-		String fxLink = createLink("fxLinkId", "fxRates", "lightgray", "Currency Conversion Service", httpRequest);
+		String mongoDbDemo = createLink("mongoDbDemoLinkId", "stockReporting", "lightgray", "MongoDb Demo",
+				httpRequest);
 		String toggleColourLink = createLink("toggleColourLinkId", "toggleColourLink", "lightgray", "Toggle Theme",
 				httpRequest);
 		String page = new String(bytes);
@@ -94,7 +95,7 @@ public class PageHeaderFooterViewUtility {
 				"GitHub", httpRequest);
 		String author = String.format("\u00A9 Created by %s; %s", authorLinkedIn, gitUrl);
 		String bodyTag = getTagStarting(page, "body");
-		Object[] formatParams = {bodyTag, author, homeLink, fxLink, performanceLink, dbJmsPerformanceLink, toggleColourLink};
+		Object[] formatParams = {bodyTag, author, homeLink, mongoDbDemo, performanceLink, dbJmsPerformanceLink, toggleColourLink};
 		return String.format("%s<center>%s<br/>%s %s<br/>%s %s<br/>%s", formatParams);
 	}
 

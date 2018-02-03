@@ -29,10 +29,10 @@ public class ReportingController {
 		Boolean theme = (Boolean)request.getSession().getAttribute("theme");
 		theme = theme != null ? !theme : true;
 		request.getSession().setAttribute("theme", theme);
-		return "redirect:/stockReporting";
+		return "redirect:/";
 	}
 	
-	@RequestMapping(value={"", "/", "/stockReporting"}, method = { RequestMethod.GET, RequestMethod.POST })
+	@RequestMapping(value={"/stockReporting"}, method = { RequestMethod.GET, RequestMethod.POST })
 	public String stockReporting(Model model,final HttpServletRequest request, 
 			@RequestParam(value="sortingOption", required = false) String sortingOption){
 		sortingOption = lastSortingOption(request, sortingOption);

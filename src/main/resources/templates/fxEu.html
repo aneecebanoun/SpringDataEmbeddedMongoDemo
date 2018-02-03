@@ -1,56 +1,149 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script th:src="@{/js/fxEu.js}"></script>
+<script th:src="@{/js/chart.js}"></script>
 
 <title>FX EU Rates</title>
 </head>
 <body style="background-color: black; color: green">
-<div th:if="${not #lists.isEmpty(dailyCurrencyExchange)}" class="container">
-<h4 th:utext="${'Exchange Rates taken from <a href='+ecbLink[0]+' target='+ecbLink[1]+'>European Central Bank</a> updated on (' + calculatedLastUpdateDate +')'}" style="color: lightblue"></h4>
-<br/>
-<form id="currencyExchangeForm" th:action="@{/fxRates}" method="POST">
-<div class="form-group blu-margin">
-From: <select id="fromCurrencyId" name="fromCurrency">
-    <!-- <option value="0" th:text="select currencyExchange" ></option> -->
-      <option 
-         th:each="currencyExchange : ${dailyCurrencyExchange}" 
-         th:value="${currencyExchange.currency}"
-         th:selected="${fromSelect} == ${currencyExchange.currency} ? true : false" 
-         th:text="${currencyExchange.description}">
-      </option>
- </select>
-To: <select id="toCurrencyId" name="toCurrency">
-    <!-- <option value="0" th:text="select currencyExchange" ></option> -->
-    <option 
-         th:each="currencyExchange : ${dailyCurrencyExchange}" 
-         th:value="${currencyExchange.currency}" 
-         th:selected="${toSelect} == ${currencyExchange.currency} ? true : false"
-         th:text="${currencyExchange.description}">
-    </option>
- </select>
-Amount: <input type="text" name="amount" id="amountId" th:value="${originalAmount}"/> 
- <input type="submit" value="Get Rate"/> <br/><label th:text="${convertedAmount}"></label>
- </div>
- </form>
- <br/>
- <table id="currencyTable" class="table table-hover">
-  <thead>
-   <tr>
-      <th onclick="sortTable(0)" style="cursor:pointer" id="currencyClick">Currency</th>
-      <th onclick="sortTable(1)" style="cursor:pointer" id="descriptionClick">Description</th>
-      <th onclick="sortTable(2)" style="cursor:pointer" id="rateClick">Rate</th>
-   </tr>
-  </thead>
-  <tr th:each="currencyExchange : ${dailyCurrencyExchange}">
-      <td th:text="${currencyExchange.currency}"></td>
-      <td th:text="${currencyExchange.description}"></td>
-      <td th:text="${currencyExchange.rate}"></td>
-  </tr>
- </table>
-</div>
+	<div th:if="${#lists.isEmpty(dailyCurrencyExchange)}" class="container">
+		<h3 style="color: red">Fx Service Currently On Hold</h3>
+
+	</div>
+	<div th:if="${not #lists.isEmpty(dailyCurrencyExchange)}"
+		class="container">
+		<h4
+			th:utext="${'Exchange Rates taken from <a href='+ecbLink[0]+' target='+ecbLink[1]+'>European Central Bank</a> updated on (' + calculatedLastUpdateDate +')'}"
+			style="color: lightblue"></h4>
+		<br />
+		<form id="currencyExchangeForm" th:action="@{/fxRates}" method="POST">
+			<div class="form-group blu-margin">
+				From: <select id="fromCurrencyId" name="fromCurrency">
+					<!-- <option value="0" th:text="select currencyExchange" ></option> -->
+					<option th:each="currencyExchange : ${dailyCurrencyExchange}"
+						th:value="${currencyExchange.currency}"
+						th:selected="${fromSelect} == ${currencyExchange.currency} ? true : false"
+						th:text="${'('+currencyExchange.currency+') '+currencyExchange.description}">
+					</option>
+				</select> To: <select id="toCurrencyId" name="toCurrency">
+					<!-- <option value="0" th:text="select currencyExchange" ></option> -->
+					<option th:each="currencyExchange : ${dailyCurrencyExchange}"
+						th:value="${currencyExchange.currency}"
+						th:selected="${toSelect} == ${currencyExchange.currency} ? true : false"
+						th:text="${'('+currencyExchange.currency+') '+currencyExchange.description}">
+					</option>
+				</select> Amount: <input type="text" name="amount" id="amountId"
+					th:value="${originalAmount}" th:size="${size}" /> <input
+					type="submit" value="Get Rate" /> <br /> <input id="gbpChartUrlId"
+					type="hidden" th:value="${gbpChartUrl}"></input> <input
+					id="usChartUrlId" type="hidden" th:value="${usChartUrl}"></input>
+				<table style="margin: 0; padding: 0; width: 100%;">
+					<tr>
+						<td><img id="gbpChartId" th:src="${gbpChartUrl}"></img></td>
+						<td><img id="usChartId" th:src="${usChartUrl}"></img></td>
+					</tr>
+				</table>
+
+				<br /> <input id="chartViewUrlId" type="hidden"
+					th:value="${chartViewUrl}"></input> 
+					<input id="chartHistory1UrlId"
+					type="hidden" th:value="${chartHistory1Url}"></input> 
+					<input
+					id="chartHistory2UrlId" type="hidden"
+					th:value="${chartHistory2Url}"></input> 
+					<input id="againstA1UrlId"
+					type="hidden" th:value="${againstA1Url}"></input> 
+					<input
+					id="againstB1UrlId" type="hidden" th:value="${againstB1Url}"></input>
+				<table style="margin: 0; padding: 0; width: 100%;">
+					<tr>
+						<td>Currency (A1): <select id="currencyA1Id" name="currency1">
+								<option th:each="currencyExchange : ${dailyCurrencyExchange}"
+									th:value="${currencyExchange.currency}"
+									th:selected="${'GBP'} == ${currencyExchange.currency} ? true : false"
+									th:text="${'('+currencyExchange.currency+') '+currencyExchange.description}">
+								</option>
+						</select> <label style="color: red;">(AGAINST)</label><br />Currency (A2): <select
+							id="currencyA2Id" name="currency2">
+								<option th:each="currencyExchange : ${dailyCurrencyExchange}"
+									th:value="${currencyExchange.currency}"
+									th:selected="${'USD'} == ${currencyExchange.currency} ? true : false"
+									th:text="${'('+currencyExchange.currency+') '+currencyExchange.description}">
+								</option>
+						</select> <img id="againstA1Id" th:src="${againstA1Url}"></img>
+
+						</td>
+
+						<td>Currency (B1): <select id="currencyB1Id"
+							name="currencyB1">
+								<option th:each="currencyExchange : ${dailyCurrencyExchange}"
+									th:value="${currencyExchange.currency}"
+									th:selected="${'USD'} == ${currencyExchange.currency} ? true : false"
+									th:text="${'('+currencyExchange.currency+') '+currencyExchange.description}">
+								</option>
+						</select> <label style="color: red;">(AGAINST)</label><br />Currency (B2): <select
+							id="currencyB2Id" name="currencyB2">
+								<option th:each="currencyExchange : ${dailyCurrencyExchange}"
+									th:value="${currencyExchange.currency}"
+									th:selected="${'GBP'} == ${currencyExchange.currency} ? true : false"
+									th:text="${'('+currencyExchange.currency+') '+currencyExchange.description}">
+								</option>
+						</select> <img id="againstB1Id" th:src="${againstB1Url}"></img>
+
+						</td>
+					</tr>
+				</table>
+Please notice: currency history based on 1 Euro against the selected currency, for the Euro itself the calculation against USD.<br/> Top charts will demonstrate such calculation if calculating against Euro.
+				<table style="margin: 0; padding: 0; width: 100%;">
+					<tr>
+						<td>Currency History (1): <select id="currencyHistory1Id"
+							name="currencyHistory1">
+								<option th:each="currencyExchange : ${dailyCurrencyExchange}"
+									th:value="${currencyExchange.currency}"
+									th:selected="${'GBP'} == ${currencyExchange.currency} ? true : false"
+									th:text="${'('+currencyExchange.currency+') '+currencyExchange.description}">
+								</option>
+						</select> <img id="chartHistory1Id" th:src="${chartHistory1Url}"></img>
+						</td>
+						<td>Currency History (2): <select id="currencyHistory2Id"
+							name="currencyHistory2">
+								<option th:each="currencyExchange : ${dailyCurrencyExchange}"
+									th:value="${currencyExchange.currency}"
+									th:selected="${'USD'} == ${currencyExchange.currency} ? true : false"
+									th:text="${'('+currencyExchange.currency+') '+currencyExchange.description}">
+								</option>
+						</select> <img id="chartHistory2Id" th:src="${chartHistory2Url}"></img>
+						</td>
+					</tr>
+				</table>
+
+
+			</div>
+		</form>
+		<br />
+		<table id="currencyTable" class="table table-hover">
+			<thead>
+				<tr>
+					<th onclick="sortTable(0)" style="cursor: pointer"
+						id="currencyClick">Currency</th>
+					<th onclick="sortTable(1)" style="cursor: pointer"
+						id="descriptionClick">Description</th>
+					<th onclick="sortTable(2)" style="cursor: pointer" id="rateClick">Rate</th>
+				</tr>
+			</thead>
+			<tr th:each="currencyExchange : ${dailyCurrencyExchange}">
+				<td th:text="${currencyExchange.currency}"></td>
+				<td th:text="${currencyExchange.description}"></td>
+				<td th:text="${currencyExchange.rate}"></td>
+			</tr>
+		</table>
+	</div>
 </body>
 </html>
