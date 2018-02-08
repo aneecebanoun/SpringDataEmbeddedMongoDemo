@@ -3,7 +3,7 @@
 [![codebeat badge](https://codebeat.co/badges/29b096c4-e814-4d80-9940-32d276bd0aef)](https://codebeat.co/projects/github-com-aneecebanoun-springdataembeddedmongodemo-master)   [![Codacy Badge](https://api.codacy.com/project/badge/Grade/49deee0e144a4c94a0dd723fbf64767e)](https://www.codacy.com/app/java2ee5/SpringDataEmbeddedMongoDemo?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=aneecebanoun/SpringDataEmbeddedMongoDemo&amp;utm_campaign=Badge_Grade)
 
 To see what the code is doing please follow the link to my AWS free tier on:
-http://13.58.229.159:8080/mongoReporting/
+http://13.58.198.56:8080/mongoReporting/
 
 Spring boot taking enterprise software development into another level, removing a lots of boiler plate infrastructure oriented code by taking care of curated dependencies with auto-configuration straight out of the box; for some one getting used to traditional spring development will ask where everything gone? where are spring configuration file(s) or class(es)? we still could create these files to suite the business requirements if we want to but spring boot make it so easy to put specific configuration in application.properties and SPRING INITIALIZR provide these files bundled and jarred to pick the configuration you specify in application.properties; there is a lot more to spring boot and it is promising.
 
